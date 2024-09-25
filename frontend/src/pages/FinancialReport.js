@@ -4,6 +4,8 @@ import ReactToPrint from 'react-to-print';
 import logo from '../assets/common/mediLineLogo.webp';
 import '../css/TestResultStyles/testResultPreview.css';
 import Swal from 'sweetalert2';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
 
 const FinancialReport = () => {
   const componentRef = useRef();
@@ -304,4 +306,4 @@ const FinancialReport = () => {
   );
 };
 
-export default FinancialReport;
+export default withPermission(FinancialReport, [Permission.ADMIN]);

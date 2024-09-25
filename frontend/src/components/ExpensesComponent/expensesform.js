@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom"
 import { useExpensesContext } from "../../hooks/useExpensesContext"
 
 import '../../css/expensesStyles/expenses.css'
+import withPermission from "../../UtillFuntions/withPermission"
+import Permission from "../../UtillFuntions/Permission"
 
 const Expensesform = () => {
     const { dispatch } = useExpensesContext()
@@ -68,4 +70,4 @@ const Expensesform = () => {
   );
 };
 
-export default Expensesform;
+export default withPermission(Expensesform, [Permission.ADMIN]);

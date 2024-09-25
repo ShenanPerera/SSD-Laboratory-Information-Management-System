@@ -1,0 +1,8 @@
+const Permission = {
+    ADMIN : 'ADMIN',
+    MEDICAL_LAB_TECHNICIAN : 'MEDICAL_LAB_TECHNICIAN',
+    LAB_ASSISTANT : 'LAB_ASSISTANT',
+    RECEPTIONIST : 'RECEPTIONIST',
+}
+
+export default Permission;

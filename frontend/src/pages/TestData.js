@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 // import withReactContent from 'sweetalert2-react-content';
 import $ from 'jquery';
 // import '../css/TestDataStyles/testData.css';
+import useUserPreferenceStore from "../store/useUserPreferenceStore";
+import Permission from "../UtillFuntions/Permission";
 
 
 const TestData = () => {
@@ -13,6 +15,11 @@ const TestData = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const navigate = useNavigate();
     const { Tests, dispatch } = useTestDataContext()
+
+    const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canDelete = (userPermissions || []).includes(Permission.ADMIN);
+
 
     useEffect(() => {
         const fetchTests = async() => {
@@ -116,6 +123,7 @@ const TestData = () => {
                             <button
                                 className="btnDelete"
                               onClick={() => clickDelete(test._id)}
+                              disabled={!canDelete}
                             >
                                 Delete
                             </button>

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "./useAuthContext";
+import fetchPermissionsAfterLogIn from "../UtillFuntions/fetchPermissionsAfterLogIn";
+import Permission from "../UtillFuntions/Permission";
 
 export const useStaffLogin = () => {
 const [error,setError] = useState(null)
@@ -27,19 +29,31 @@ if(!response.ok){
 
 if(response.ok){
     localStorage.setItem('user', JSON.stringify(json))
-
+    
     dispatch({type: 'LOGIN', payload: json})
 
-    setIsLoading(false)
+    fetchPermissionsAfterLogIn({
+        fetchFunction: async () => {
+            console.log(json.position)
 
-
-
-
-
-
+            switch(json.position){
+                case 'Receptionist':
+                    return [Permission.RECEPTIONIST];
+                case 'Medical Lab Technologist':
+                    return [Permission.MEDICAL_LAB_TECHNICIAN];
+                case 'Lab Assistant':
+                    return [Permission.LAB_ASSISTANT];
+                default:
+                    return [];
+            }
+            
+},
+        afterSet: (permissions) => {
+            console.log('permissions:', permissions);
+        }
+    });
+    setIsLoading(false);
 }
-
-
 }
 return { login ,isLoading,error}
 

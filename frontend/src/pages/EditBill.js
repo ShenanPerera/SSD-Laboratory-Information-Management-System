@@ -4,6 +4,9 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import moment from 'moment';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
+
 const EditBill = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -246,4 +249,4 @@ const EditBill = () => {
   );
 };
 
-export default EditBill;
+export default withPermission(EditBill, [Permission.ADMIN , Permission.RECEPTIONIST , Permission.LAB_ASSISTANT]);

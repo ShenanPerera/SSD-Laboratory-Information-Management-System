@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import withPermission from "../../UtillFuntions/withPermission";
+import Permission from "../../UtillFuntions/Permission";
 
 const CreatePatientForm = () => {
   const navigate = useNavigate();
@@ -223,4 +225,4 @@ const CreatePatientForm = () => {
   );
 };
 
-export default CreatePatientForm;
+export default withPermission(CreatePatientForm, [Permission.RECEPTIONIST, Permission.ADMIN]);

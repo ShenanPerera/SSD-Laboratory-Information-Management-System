@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import formatDate from "../UtillFuntions/formatDate";
 import moment from 'moment';
 import Swal from 'sweetalert2';
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const Expenseslist = () => {
   const { expenses, dispatch } = useExpensesContext();
@@ -133,4 +135,4 @@ const Expenseslist = () => {
   );
 };
 
-export default Expenseslist;
+export default withPermission(Expenseslist, [Permission.ADMIN]);
