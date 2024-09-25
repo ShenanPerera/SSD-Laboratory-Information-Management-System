@@ -6,6 +6,9 @@ import logo from '../assets/common/mediLineLogo.webp';
 import '../css/TestResultStyles/testResultPreview.css';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
+
 const PrintBill = ({ billID }) => {
   const componentRef = useRef();
   const navigate = useNavigate();
@@ -216,4 +219,4 @@ const PrintBill = ({ billID }) => {
   );
 };
 
-export default PrintBill;
+export default withPermission(PrintBill, [Permission.ADMIN, Permission.RECEPTIONIST]);

@@ -1,6 +1,9 @@
 import { useLocation } from 'react-router-dom';
 import EditBill from '../components/BillComponent/EditBill';
 import { useEffect, useState } from 'react';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
+
 const EditBillNew = () => {
   const location = useLocation();
   const [patient, setPatient] = useState();
@@ -18,4 +21,8 @@ const EditBillNew = () => {
   return <>{patient && <EditBill patient={patient} />}</>;
 };
 
-export default EditBillNew;
+export default withPermission(EditBillNew, [
+  Permission.ADMIN,
+  Permission.LAB_ASSISTANT,
+  Permission.RECEPTIONIST,
+]);

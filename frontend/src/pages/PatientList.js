@@ -7,10 +7,18 @@ import {
 import { useNavigate } from 'react-router-dom';
 import $ from 'jquery';
 import Swal from 'sweetalert2';
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
+import useUserPreferenceStore from '../store/useUserPreferenceStore';
 
 const PatientList = () => {
   const navigate = useNavigate();
   const { patients, dispatch } = usePatientContext();
+
+  const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canDelete = (userPermissions || []).includes(Permission.ADMIN);
+
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -91,6 +99,7 @@ const PatientList = () => {
                 <th>Gender</th>
                 <th>Tel</th>
                 <th>Delete</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -106,14 +115,20 @@ const PatientList = () => {
                     </td>
                     <td>{patient.gender}</td>
                     <td>{patient.tpNo}</td>
+                   
                     <td>
                       <button
                         className="btnDelete"
-                        onClick={() => clickDelete(patient._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          clickDelete(patient._id);
+                        }}
+                        disabled={!canDelete}
                       >
                         Delete
                       </button>
                     </td>
+                   
                   </tr>
                 ))}
             </tbody>
@@ -127,4 +142,8 @@ const PatientList = () => {
   );
 };
 
-export default PatientList;
+export default withPermission(PatientList, [
+  Permission.ADMIN,
+  Permission.LAB_ASSISTANT,
+  Permission.RECEPTIONIST,
+]);

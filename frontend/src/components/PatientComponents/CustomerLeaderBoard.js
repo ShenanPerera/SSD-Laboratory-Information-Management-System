@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import withPermission from '../../UtillFuntions/withPermission';
+import Permission from '../../UtillFuntions/Permission';
 
 const CustomerLeaderBoard = ({ top }) => {
   const [customers, setCustomers] = useState([]);
@@ -93,4 +95,4 @@ const CustomerLeaderBoard = ({ top }) => {
   );
 };
 
-export default CustomerLeaderBoard;
+export default withPermission(CustomerLeaderBoard, [Permission.ADMIN , Permission.LAB_ASSISTANT, Permission.RECEPTIONIST]);

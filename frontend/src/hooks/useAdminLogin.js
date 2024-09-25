@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "./useAuthContext";
+import fetchPermissionsAfterLogIn from "../UtillFuntions/fetchPermissionsAfterLogIn";
+import Permission from "../UtillFuntions/Permission";
 
 export const useAdminLogin = () => {
 const [error,setError] = useState(null)
@@ -9,7 +11,6 @@ const {dispatch} = useAuthContext()
 const login = async (username,pw) => { 
     setIsLoading(true)
     setError(null)
-
 
 const response = await fetch('/api/Admin/login',{
     method: 'POST',
@@ -30,6 +31,14 @@ if(response.ok){
 
     dispatch({type: 'LOGIN', payload: json})
 
+    fetchPermissionsAfterLogIn({
+        fetchFunction: async () => {
+            return [Permission.ADMIN];
+        },
+        afterSet: (permissions) => {
+            console.log('permissions:', permissions);
+        },
+    });
     setIsLoading(false)
 
 }

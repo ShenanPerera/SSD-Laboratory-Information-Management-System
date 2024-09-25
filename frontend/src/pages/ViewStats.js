@@ -4,6 +4,8 @@ import '../css/TestDataStyles/testData.css';
 import 'devextreme/dist/css/dx.light.css';
 import React from 'react';
 import Swal from 'sweetalert2';
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 
 const ViewStats = () => {
@@ -154,4 +156,4 @@ const ViewStats = () => {
     } 
 
 
-export default ViewStats;
+export default withPermission(ViewStats, [Permission.ADMIN]);

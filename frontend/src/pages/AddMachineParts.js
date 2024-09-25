@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useEffect , useState } from "react";
 import MachinePartsForm from "../components/machineComponent/machinePartsForm"
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const AddMachineParts = () => {
 
@@ -32,4 +34,4 @@ const AddMachineParts = () => {
      );
 }
  
-export default AddMachineParts
+export default withPermission(AddMachineParts, [Permission.ADMIN, Permission.MEDICAL_LAB_TECHNICIAN]);

@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import '../css/PatientProfileStyles/patient-profile.css';
 // components
 import PatientDetails from '../components/PatientComponents/PatientDetails';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
 
 const PatientProfile = () => {
   const { patients, dispatch } = usePatientContext();
@@ -39,4 +41,4 @@ const PatientProfile = () => {
     </div>
   );
 };
-export default PatientProfile;
+export default withPermission(PatientProfile, [Permission.ADMIN,Permission.LAB_ASSISTANT, Permission.RECEPTIONIST]);

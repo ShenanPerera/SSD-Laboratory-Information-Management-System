@@ -1,8 +1,9 @@
 import React from 'react'
 import InventoryUpdateForm from '../components/InventoryComponent/InventoryUpdateForm'
+import withPermission from '../UtillFuntions/withPermission'
+import Permission from '../UtillFuntions/Permission'
 
-
-export default function UpdateInventory() {
+function UpdateInventory() {
 
     
     return (
@@ -11,3 +12,5 @@ export default function UpdateInventory() {
         </div>
     )
 }
+
+export default withPermission(UpdateInventory, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

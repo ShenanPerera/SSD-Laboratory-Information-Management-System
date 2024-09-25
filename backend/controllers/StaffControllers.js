@@ -1,7 +1,8 @@
 const Staff = require('../models/StaffModules');
 const jwt = require('jsonwebtoken');
 const mongooose = require('mongoose');
-const auth = require('../middleware/requireStaffAuth')
+const auth = require('../middleware/requireStaffAuth');
+const { post } = require('../routes/StaffRoutes');
 
 
 
@@ -174,9 +175,10 @@ const loginStaff = async (req,res) => {
     const token = createToken(staffMember._id)
     const userid = staffMember._id
     const eid = staffMember.Eid
+    const position = staffMember.post
     
 
-    res.status(200).json({username,token,userid,eid})
+    res.status(200).json({username,token,userid,eid , position})
 
 } catch(error){
     res.status(400).json({error:error.message})

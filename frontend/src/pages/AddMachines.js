@@ -1,5 +1,7 @@
 import MachineForm from "../components/machineComponent/MachineForm"
 import "../css/MachineStyles/machineDetails.css"
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const AddMachines = () => {
      return ( 
@@ -12,4 +14,4 @@ const AddMachines = () => {
      );
 }
  
-export default AddMachines
+export default withPermission(AddMachines, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

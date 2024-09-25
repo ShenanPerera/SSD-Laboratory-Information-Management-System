@@ -3,12 +3,17 @@ import { useEffect, useState } from "react";
 import SingleTestDetails from "../components/TestDataComponents/SingleTestDetails";
 import TestSubCategoryDetails from "../components/TestDataComponents/TestSubCategoryDetails";
 import '../css/TestDataStyles/testData.css';
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
+
 
 const ViewTest = () => {
 
     const { id } = useParams();
 
     const [Test,setTest] = useState(null);
+
+    
 
     useEffect(() => {
         const fetchTest = async() => {
@@ -45,4 +50,4 @@ const ViewTest = () => {
     );
 }
  
-export default ViewTest;
+export default withPermission(ViewTest, [Permission.ADMIN, Permission.LAB_ASSISTANT, Permission.RECEPTIONIST]);

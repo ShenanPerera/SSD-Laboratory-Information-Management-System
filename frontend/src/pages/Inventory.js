@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 // import withReactContent from 'sweetalert2-react-content';
 import $ from "jquery";
 // import '../css/TestDataStyles/testData.css';
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 import withReactContent from "sweetalert2-react-content";
 
@@ -152,4 +154,7 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default withPermission(Inventory, [
+  Permission.ADMIN,
+  Permission.LAB_ASSISTANT,
+]);

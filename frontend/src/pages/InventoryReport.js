@@ -4,6 +4,8 @@ import ReactToPrint from 'react-to-print';
 import logo from '../assets/common/mediLineLogo.webp';
 import '../css/TestResultStyles/testResultPreview.css'
 import moment from 'moment';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
 
 const InventoryReport = () => {
   const componentRef = useRef();
@@ -104,4 +106,4 @@ const InventoryReport = () => {
   );
 };
 
-export default InventoryReport;
+export default withPermission(InventoryReport, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

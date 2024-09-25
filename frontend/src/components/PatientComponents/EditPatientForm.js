@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import withPermission from '../../UtillFuntions/withPermission';
+import Permission from '../../UtillFuntions/Permission';
 
 const EditPatientForm = ({ patient }) => {
   const { id } = useParams();
@@ -227,4 +229,7 @@ const EditPatientForm = ({ patient }) => {
   );
 };
 
-export default EditPatientForm;
+export default withPermission(EditPatientForm, [
+ Permission.ADMIN,
+  Permission.RECEPTIONIST,
+]);

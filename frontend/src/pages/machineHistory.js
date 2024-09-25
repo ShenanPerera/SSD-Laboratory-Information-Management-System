@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MachineDetails from "../components/machineComponent/machineDetails";
 import "../css/MachineStyles/machineDetails.css"
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const ViewMachineHistory = () => {
 
@@ -35,4 +37,4 @@ const ViewMachineHistory = () => {
     );
 }
  
-export default ViewMachineHistory;
+export default withPermission(ViewMachineHistory, [Permission.ADMIN, Permission.LAB_ASSISTANT, Permission.MEDICAL_LAB_TECHNICIAN]);

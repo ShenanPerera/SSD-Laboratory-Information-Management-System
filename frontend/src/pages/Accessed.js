@@ -5,7 +5,8 @@ import JsBarcode from 'jsbarcode';
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import moment from 'moment';
-
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
 
 const Accessed = () => {
   const { samples, dispatch } = useSampleContext();
@@ -185,4 +186,7 @@ const Accessed = () => {
 }; 
 
 
-export default Accessed;
+export default withPermission(Accessed, [
+  Permission.LAB_ASSISTANT,
+  Permission.ADMIN
+]);

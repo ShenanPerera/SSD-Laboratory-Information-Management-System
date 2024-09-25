@@ -5,6 +5,8 @@ import JsBarcode from 'jsbarcode';
 import jsPDF from 'jspdf';
 import moment from 'moment';
 import Swal from 'sweetalert2';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
 
 const initilizeDataTable = () => {
   $(function() {
@@ -283,7 +285,7 @@ const PendingAccession = () => {
   );
 };
 
-export default PendingAccession;
+export default withPermission(PendingAccession, [Permission.ADMIN, Permission.LAB_ASSISTANT]);
 
 
 

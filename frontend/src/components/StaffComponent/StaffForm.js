@@ -1,6 +1,8 @@
 import {  useState } from "react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import Swal from 'sweetalert2';
+import withPermission from "../../UtillFuntions/withPermission";
+import Permission from "../../UtillFuntions/Permission";
 
 const StaffForm = () => {
     const [name, setName] = useState('')
@@ -193,4 +195,4 @@ const StaffForm = () => {
 
 }
 
-export default StaffForm
+export default withPermission(StaffForm, [Permission.ADMIN]);
