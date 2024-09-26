@@ -3,11 +3,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import $ from 'jquery';
 import moment from 'moment';
 import Swal from 'sweetalert2';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
+import useUserPreferenceStore from '../store/useUserPreferenceStore';
 
 const TransactionHistory = () => {
   const [bills, setBills] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canDelete = (userPermissions || []).includes(Permission.ADMIN);
+
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -107,6 +115,7 @@ const TransactionHistory = () => {
                       <button
                         className="btnDelete"
                         onClick={() => clickDelete(bill._id, bill.patientId)}
+                        disabled={!canDelete}
                       >
                         Delete
                       </button>

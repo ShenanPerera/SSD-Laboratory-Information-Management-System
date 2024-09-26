@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import $ from "jquery";
+import withPermission from "../../UtillFuntions/withPermission";
+import Permission from "../../UtillFuntions/Permission";
 
 const TestDataz = () => {
   const navigate = useNavigate();
@@ -145,4 +147,4 @@ const TestDataz = () => {
   );
 };
 
-export default TestDataz;
+export default withPermission(TestDataz, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

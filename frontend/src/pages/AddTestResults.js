@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const TestResultView = () => {
   const navigate = useNavigate()
@@ -133,4 +135,4 @@ const TestResultView = () => {
   )
 }
 
-export default TestResultView;
+export default withPermission(TestResultView, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

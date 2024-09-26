@@ -3,10 +3,18 @@ import $ from 'jquery';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import Swal from 'sweetalert2';
+import withPermission from '../../UtillFuntions/withPermission';
+import Permission from '../../UtillFuntions/Permission';
+import useUserPreferenceStore from '../../store/useUserPreferenceStore';
 
 const AllBills = () => {
   const [bills, setBills] = useState([]);
   const navigate = useNavigate();
+
+  const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canDelete = (userPermissions || []).includes(Permission.ADMIN);
+
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -102,6 +110,8 @@ const AllBills = () => {
                       <button
                         className="btnDelete"
                         onClick={() => clickDelete(bill._id)}
+                        disabled={!canDelete}
+                        
                       >
                         Delete
                       </button>
@@ -119,4 +129,4 @@ const AllBills = () => {
   );
 };
 
-export default AllBills;
+export default withPermission(AllBills, [Permission.ADMIN, Permission.RECEPTIONIST]);

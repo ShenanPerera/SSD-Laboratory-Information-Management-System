@@ -1,6 +1,7 @@
 import {  useState } from "react";
 import { useAuthContext } from "../../hooks/useAuthContext";
-
+import withPermission from "../../UtillFuntions/withPermission";
+import Permission from "../../UtillFuntions/Permission";
 
 
 const ProfileStaff = ({Staff}) => {
@@ -17,4 +18,4 @@ const ProfileStaff = ({Staff}) => {
 
 
 
-export default ProfileStaff
+export default withPermission(ProfileStaff, [Permission.MEDICAL_LAB_TECHNICIAN, Permission.LAB_ASSISTANT, Permission.RECEPTIONIST]);

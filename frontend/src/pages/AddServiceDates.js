@@ -2,6 +2,8 @@ import ServiceMachineForm from "../components/machineComponent/serviceMachinesFo
 import '../css/MachineStyles/machineDetails.css'
 import { useLocation } from "react-router-dom";
 import { useEffect , useState } from "react";
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const AddServiceDates = () => {
 
@@ -32,4 +34,4 @@ const AddServiceDates = () => {
      );
 }
  
-export default AddServiceDates
+export default withPermission(AddServiceDates, [Permission.MEDICAL_LAB_TECHNICIAN , Permission.ADMIN]);

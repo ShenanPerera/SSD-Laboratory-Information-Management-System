@@ -4,6 +4,8 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import $ from "jquery";
 import ReactToPrint from "react-to-print";
 import logo from "../../assets/common/mediLineLogo.webp";
+import withPermission from "../../UtillFuntions/withPermission";
+import Permission from "../../UtillFuntions/Permission";
 
 const SalaryTable = () => {
   const [Staff, setStaff] = useState(null);
@@ -194,4 +196,7 @@ const SalaryTable = () => {
   );
 };
 
-export default SalaryTable;
+export default withPermission(SalaryTable, [
+  Permission.ADMIN,
+ 
+]);

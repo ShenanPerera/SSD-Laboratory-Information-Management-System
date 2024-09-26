@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import TestSubCategoryDetails from "./TestSubCategoryDetails";
+import withPermission from "../../UtillFuntions/withPermission";
+import Permission from "../../UtillFuntions/Permission";
 
 const TestDataForm = () => {
   const [testID, setTestID] = useState("");
@@ -518,4 +520,7 @@ const TestDataForm = () => {
   );
 };
 
-export default TestDataForm;
+export default withPermission(TestDataForm, [
+  Permission.ADMIN,
+  Permission.LAB_ASSISTANT,
+]);

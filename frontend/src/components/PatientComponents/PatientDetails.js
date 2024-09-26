@@ -2,10 +2,19 @@ import { usePatientContext } from '../../hooks/usePatientContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { DELETE_PATIENT } from '../../context/patientContextDeclarations';
 import Swal from 'sweetalert2';
+import useUserPreferenceStore from '../../store/useUserPreferenceStore';
+import Permission from '../../UtillFuntions/Permission';
 
 const PatientDetails = ({ edit, patient }) => {
   const { dispatch } = usePatientContext();
   const navigate = useNavigate();
+
+  const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canDelete = (userPermissions || []).includes(Permission.ADMIN);
+  const canEdit = (userPermissions || []).includes(Permission.RECEPTIONIST);
+  const generateBill = (userPermissions || []).includes(Permission.RECEPTIONIST);
+
 
   const handleDelete = async () => {
     const confirmed = await Swal.fire({
@@ -95,24 +104,29 @@ const PatientDetails = ({ edit, patient }) => {
           <div className="row">
             <div className="col-6">
               <Link 
-                style={{ textDecoration: 'none',backgroundColor:"white" }}
+                style={{ textDecoration: 'none', backgroundColor: "white" }}
                 to={'./edit'}
                 state={patient}
               >
-                <button style={{backgroundColor:"white"}}
+                <button 
+                  style={{ backgroundColor: "white" }}
                   id="editProfileButton"
-                  className=" mt-4 px-4 d-block m-auto"
+                  className="mt-4 px-4 d-block m-auto"
+                  disabled={!canEdit}
                 >
                   Edit Account
                 </button>
               </Link>
             </div>
             <div className="col-6">
-              <Link style={{ textDecoration: 'none',backgroundColor:"white" }} to={''}>
-                <button style={{backgroundColor:"white"}}
+              <Link style={{ textDecoration: 'none', backgroundColor: "white" }} to={''}>
+                <button 
+                  style={{ backgroundColor: "white" }}
                   id="deleteProfileButton"
-                  className=" mt-4 px-4 d-block m-auto"
+                  className="mt-4 px-4 d-block m-auto"
                   onClick={handleDelete}
+                  disabled={!canDelete}
+                  
                 >
                   Delete Account
                 </button>
@@ -146,6 +160,7 @@ const PatientDetails = ({ edit, patient }) => {
                     fontSize: '1rem',
                   }}
                   className="btnConfirm mt-4 px-4 d-block m-auto"
+                  disabled={!generateBill}
                 >
                   Add Bill
                 </button>

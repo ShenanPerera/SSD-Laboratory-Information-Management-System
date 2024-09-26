@@ -2,6 +2,8 @@ import UpdateMachine from "../components/machineComponent/UpdateMachineForm";
 import "../css/MachineStyles/machineDetails.css"
 import { useParams } from "react-router-dom";
 import { useEffect , useState } from "react";
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const EditMachineDetails = () => {
     const { id } = useParams();
@@ -34,4 +36,4 @@ const EditMachineDetails = () => {
      );
 }
  
-export default EditMachineDetails
+export default withPermission(EditMachineDetails, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

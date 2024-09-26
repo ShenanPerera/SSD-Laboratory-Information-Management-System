@@ -4,11 +4,18 @@ import { useMachinePartsContext } from '../../hooks/useMachinePartsContext'
 import ViewServiceHistory from '../../pages/viewServiceDates'
 import $ from 'jquery';
 import Swal from 'sweetalert2';
+import useUserPreferenceStore from '../../store/useUserPreferenceStore';
+import Permission from '../../UtillFuntions/Permission';
 
 const MachineHistory = ({ machine}) => {
   const navigate = useNavigate();
   const {machineParts, dispatch} = useMachinePartsContext();
   // console.log(currentMachine);
+
+  const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canUpdateMachineService = (userPermissions || []).includes(Permission.ADMIN , Permission.MEDICAL_LAB_TECHNICIAN);
+
 
   //Machine Parts Details
   useEffect(() => {
@@ -147,9 +154,9 @@ const MachineHistory = ({ machine}) => {
         </p>
         <div className="row">
         <div className="col-12">
-        <button className = "subBtn" onClick={() => handleClickupdateMachine (machine._id)}>Update Machine Details</button>
-        <button className = "subBtn"  onClick={() => handleClickService(machine._id)}>Service Machines</button>        
-        <button className = "subBtn"  onClick={() => handleClickMachineParts (machine._id)}> Replace Machine Parts</button>
+        <button className = "subBtn" onClick={() => handleClickupdateMachine (machine._id)} >Update Machine Details</button>
+        <button className = "subBtn"  onClick={() => handleClickService(machine._id)} disabled = {!canUpdateMachineService}>Service Machines</button>        
+        <button className = "subBtn"  onClick={() => handleClickMachineParts (machine._id)} disabled={!canUpdateMachineService}> Replace Machine Parts</button>
         </div>
         </div>
       </div>

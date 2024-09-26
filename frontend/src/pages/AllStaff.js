@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import { useAuthContext } from "../hooks/useAuthContext";
 import $ from "jquery";
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const AllStaff = () =>  {
     const [Staff, setStaff] = useState(null)
@@ -117,4 +119,4 @@ const AllStaff = () =>  {
     )
 }
 
-export default AllStaff
+export default withPermission(AllStaff, [Permission.ADMIN])

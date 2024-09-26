@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import $ from 'jquery';
 import moment from 'moment';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
 
 const PendingTestResults = () => {
   const [testResults, setTestResults] = useState(null);
@@ -100,4 +102,4 @@ const PendingTestResults = () => {
   
 };
 
-export default PendingTestResults;
+export default withPermission(PendingTestResults, [Permission.ADMIN, Permission.LAB_ASSISTANT, Permission.RECEPTIONIST]);

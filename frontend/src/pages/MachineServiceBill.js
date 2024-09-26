@@ -1,6 +1,8 @@
 import ServiceBill from "../components/machineComponent/machineServiceBill"
 import { useParams } from "react-router-dom";
 import { useEffect , useState } from "react";
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const MachineServiceBill = () => {
     const { id } = useParams();
@@ -32,4 +34,4 @@ const MachineServiceBill = () => {
         </div>
     );
 }; 
-export default MachineServiceBill
+export default withPermission(MachineServiceBill, [Permission.ADMIN, Permission.LAB_ASSISTANT]);

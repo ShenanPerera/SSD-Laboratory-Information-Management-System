@@ -3,11 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import $ from 'jquery';
 import { useMachineContext } from '../hooks/useMachineContext'; 
 import Swal from 'sweetalert2';
+import withPermission from '../UtillFuntions/withPermission';
+import Permission from '../UtillFuntions/Permission';
+import useUserPreferenceStore from '../store/useUserPreferenceStore';
 
 const MachineList = () => {
   const navigate = useNavigate();
   // const [machines,setMachines] = useState(null);
   const {machines, dispatch} = useMachineContext();
+
+  const userPermissions = useUserPreferenceStore((state) => state.permissions);
+
+  const canDelete = (userPermissions || []).includes(Permission.ADMIN);
+
 
   useEffect(() => {
     const fetchMachines = async () => {
@@ -95,7 +103,11 @@ const MachineList = () => {
                     <td onClick={() => handleClick(machine._id)}>{machine.MachineType}</td>
                     <td onClick={() => handleClick(machine._id)}>{machine.Brand}</td>
                     <td onClick={() => handleClick(machine._id)}>{machine.PurchaseDate}</td>
-                    <td><button className="btnDelete" onClick={() => handleDelete(machine._id)}>Delete</button></td>
+                    <td>
+                      <button className="btnDelete" 
+                        onClick={() => handleDelete(machine._id)}
+                        disabled={!canDelete}
+                      >Delete</button></td>
                   </tr>
                 ))}
             </tbody>
@@ -105,4 +117,4 @@ const MachineList = () => {
   );
 };
 
-export default MachineList;
+export default withPermission(MachineList, [Permission.ADMIN, Permission.LAB_ASSISTANT , Permission.MEDICAL_LAB_TECHNICIAN]);
