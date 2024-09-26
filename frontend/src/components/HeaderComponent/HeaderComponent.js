@@ -1,36 +1,28 @@
-
-
 // import { Link, Navigate } from 'react-router-dom';
-import {useLogout} from '../../hooks/useLogout'
+import { useLogout } from '../../hooks/useLogout';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useNavigate } from 'react-router-dom';
-
+import useUserPreferenceStore from '../../store/useUserPreferenceStore';
+import Permission from '../../UtillFuntions/Permission';
 
 const HeaderComponent = ({ logoImgSrc, username }) => {
-  const { logout } = useLogout()
-  const { user } = useAuthContext()
-  const navigate = useNavigate()
+  const { logout } = useLogout();
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const permissions = useUserPreferenceStore((state) => state.permissions);
 
-  const handleClick = () =>
-  {
-    logout()
-    navigate("/Welcome")
-  }
+  const handleClick = () => {
+    logout();
+    navigate('/Welcome');
+  };
 
-  const profileClick =() =>
-  {
-    if(user.username === "admin2")
-    {
-      navigate("/AdminProfile")
+  const profileClick = () => {
+    if (permissions === Permission.ADMIN) {
+      navigate('/AdminProfile');
+    } else {
+      navigate('/StaffProfile');
     }
-    else
-    {
-      navigate("/StaffProfile")
-    }
-
-  }
-
-
+  };
 
   return (
     <nav
@@ -41,22 +33,24 @@ const HeaderComponent = ({ logoImgSrc, username }) => {
         <img style={{ width: '150px', marginLeft: '1rem' }} src={logoImgSrc} />
       </a>
       {user && (
-      <div className="userdiv">
-        <span style={{marginRight:"10px"}}>{user.username}                                                                                     </span>
-        
-        <button className="btnDelete"  onClick={profileClick}>Profile</button>
-        <button className="btnDelete" onClick={handleClick}>Log out</button>
-        
-      </div>)}
-      <div className="userdiv">
+        <div className="userdiv">
+          <span style={{ marginRight: '10px' }}>{user.username} </span>
 
-      {!user && (
-        <a href='/Welcome'><button className="btnLogin">Login</button></a>
+          <button className="btnDelete" onClick={profileClick}>
+            Profile
+          </button>
+          <button className="btnDelete" onClick={handleClick}>
+            Log out
+          </button>
+        </div>
       )}
+      <div className="userdiv">
+        {!user && (
+          <a href="/Welcome">
+            <button className="btnLogin">Login</button>
+          </a>
+        )}
       </div>
-      
-
-      
     </nav>
   );
 };
