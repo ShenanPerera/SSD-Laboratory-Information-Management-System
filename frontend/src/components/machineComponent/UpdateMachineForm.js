@@ -1,67 +1,77 @@
 import { useState } from 'react';
 // import { useMachineContext } from '../../hooks/useMachineContext';
-import '../../css/MachineStyles/machineDetails.css'
-import Swal from 'sweetalert2';
+import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../../css/MachineStyles/machineDetails.css';
 
-const UpdateMachine = ({machine}) => {
+const UpdateMachine = ({ machine }) => {
   //const { dispatch } = useMachineContext();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [MachineType, setMachineType] = useState(machine.MachineType)
-    const [Brand, setBrand] = useState(machine.Brand)
-    const [PurchaseDate, setPurchaseDate] = useState(machine.PurchaseDate)
-    const [Model, setModel] = useState(machine.Model)
-    const [SerialNo, setSerialNo] = useState(machine.SerialNo)
-    const [WarrantyExp, setWarrantyExp] = useState(machine.WarrantyExp)
-    const [Manufacturer, setManufacturer] = useState(machine.Manufacturer)
-    const [TelNo, setTelNo] = useState(machine.TelNo)
-    const [Price , setPrice] = useState(machine.Price)
-    const [error, setError] = useState(null);
-    const[emptyFields, setEmptyFields] = useState([]);
-
+  const [MachineType, setMachineType] = useState(machine.MachineType);
+  const [Brand, setBrand] = useState(machine.Brand);
+  const [PurchaseDate, setPurchaseDate] = useState(machine.PurchaseDate);
+  const [Model, setModel] = useState(machine.Model);
+  const [SerialNo, setSerialNo] = useState(machine.SerialNo);
+  const [WarrantyExp, setWarrantyExp] = useState(machine.WarrantyExp);
+  const [Manufacturer, setManufacturer] = useState(machine.Manufacturer);
+  const [TelNo, setTelNo] = useState(machine.TelNo);
+  const [Price, setPrice] = useState(machine.Price);
+  const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
   const handleMachineUpdate = async (e) => {
-            e.preventDefault()
-    
-            const updatedMachine = {MachineType ,Price , Brand , PurchaseDate ,Model , SerialNo , WarrantyExp , Manufacturer , TelNo} 
-            
-            const response = await fetch(`/api/machines/` + machine._id, {
-                method: 'PATCH',
-                body: JSON.stringify(updatedMachine),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            const json = await response.json()
-    
-            if(!response.ok) {
-                setError(json.error)
-                setEmptyFields(json.emptyFields)
-                Swal.fire({
-                    title: 'Error',
-                    text: error,
-                    icon: 'error',
-                    showConfirmButton: false,
-                    timer: 1000,
-                })
-            }
-            if(response.ok) {
-                if( response.status === 200 ) {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Machine updated Successfully',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        navigate('/machineHistory/' + machine._id);
-                    })
-                }
-            }
-        }
-  
+    e.preventDefault();
+
+    const updatedMachine = {
+      MachineType: DOMPurify.sanitize(MachineType),
+      Brand: DOMPurify.sanitize(Brand),
+      PurchaseDate: DOMPurify.sanitize(PurchaseDate),
+      Model: DOMPurify.sanitize(Model),
+      SerialNo: DOMPurify.sanitize(SerialNo),
+      WarrantyExp: DOMPurify.sanitize(WarrantyExp),
+      Manufacturer: DOMPurify.sanitize(Manufacturer),
+      TelNo: DOMPurify.sanitize(TelNo),
+      Price: DOMPurify.sanitize(Price),
+    };
+
+    const response = await fetch(`/api/machines/` + machine._id, {
+      method: 'PATCH',
+      body: JSON.stringify(updatedMachine),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const json = await response.json();
+
+    if (!response.ok) {
+      setError(json.error);
+      setEmptyFields(json.emptyFields);
+      Swal.fire({
+        title: 'Error',
+        text: error,
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    }
+    if (response.ok) {
+      if (response.status === 200) {
+        Swal.fire({
+          title: 'Success',
+          text: 'Machine updated Successfully',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).then(() => {
+          navigate('/machineHistory/' + machine._id);
+        });
+      }
+    }
+  };
+
   // const handleUpdate = async (e) => {
   //   console.log(MachineType, Brand, Model, SerialNo,PurchaseDate,WarrantyExp, Manufacturer, TelNo);
   // };
@@ -109,7 +119,7 @@ const UpdateMachine = ({machine}) => {
               onChange={(e) => setSerialNo(e.target.value)}
               value={SerialNo}
               // required
-              className={emptyFields.includes('SerialNo') ? 'error' : ''} 
+              className={emptyFields.includes('SerialNo') ? 'error' : ''}
             />
           </div>
           <div className="input-box">
@@ -164,7 +174,7 @@ const UpdateMachine = ({machine}) => {
             />
           </div>
           <div className="Add-button">
-            <button className='subBtn'>Update Machine</button>
+            <button className="subBtn">Update Machine</button>
           </div>
           {/* {error && <div className="error">{error}</div>} */}
         </div>

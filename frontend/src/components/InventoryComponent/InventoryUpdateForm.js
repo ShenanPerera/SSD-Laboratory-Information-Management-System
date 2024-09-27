@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import moment from "moment";
+import DOMPurify from 'dompurify';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const UpdateInventory = () => {
   const { id } = useParams();
@@ -9,7 +10,7 @@ const UpdateInventory = () => {
   const [proName, setName] = useState();
   const [exDate, setDate] = useState();
   const [quantity, setQty] = useState();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [emptyFields, setEmptyFields] = useState([]);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const UpdateInventory = () => {
       if (response.ok) {
         setType(json.inveType);
         setName(json.proName);
-        setDate(moment(json.exDate).format("YYYY-MM-DD"));
+        setDate(moment(json.exDate).format('YYYY-MM-DD'));
         setQty(json.quantity);
       }
     };
@@ -29,26 +30,28 @@ const UpdateInventory = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      const inventory = {
+        inveType: DOMPurify.sanitize(inveType),
+        proName: DOMPurify.sanitize(proName),
+        exDate: DOMPurify.sanitize(exDate),
+        quantity: DOMPurify.sanitize(quantity),
+      };
+
       const response = await fetch(`/api/inventoryRoutes/${id}`, {
-        method: "PATCH",
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          inveType,
-          proName,
-          exDate,
-          quantity,
-        }),
+        body: JSON.stringify(inventory),
       });
 
       const json = await response.json();
 
       if (response.ok) {
         Swal.fire({
-          title: "Success",
-          text: "Record has been updated",
-          icon: "success",
+          title: 'Success',
+          text: 'Record has been updated',
+          icon: 'success',
           showConfirmButton: false,
           timer: 2000,
           timerProgressBar: true,
@@ -60,11 +63,11 @@ const UpdateInventory = () => {
         setEmptyFields(json.emptyFields);
 
         Swal.fire({
-          title: "Error",
-          text: "Record could not be updated",
-          icon: "error",
-          confirmButtonText: "OK",
-          customClass: "alerts",
+          title: 'Error',
+          text: 'Record could not be updated',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          customClass: 'alerts',
         });
       }
     } catch (error) {
@@ -81,7 +84,7 @@ const UpdateInventory = () => {
           <input
             type="text"
             className={`form-control ${
-              emptyFields.includes("inveType") ? "error" : ""
+              emptyFields.includes('inveType') ? 'error' : ''
             }`}
             id="inveType"
             name="inveType"
@@ -94,7 +97,7 @@ const UpdateInventory = () => {
           <input
             type="text"
             className={`form-control ${
-              emptyFields.includes("proName") ? "error" : ""
+              emptyFields.includes('proName') ? 'error' : ''
             }`}
             id="proName"
             name="proName"
@@ -107,7 +110,7 @@ const UpdateInventory = () => {
           <input
             type="date"
             className={`form-control ${
-              emptyFields.includes("exDate") ? "error" : ""
+              emptyFields.includes('exDate') ? 'error' : ''
             }`}
             id="exDate"
             name="exDate"
@@ -120,7 +123,7 @@ const UpdateInventory = () => {
           <input
             type="number"
             className={`form-control ${
-              emptyFields.includes("quantity") ? "error" : ""
+              emptyFields.includes('quantity') ? 'error' : ''
             }`}
             id="quantity"
             name="quantity"

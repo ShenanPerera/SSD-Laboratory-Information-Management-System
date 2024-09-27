@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import DOMPurify from 'dompurify';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 const UpdateCategoryForm = ({ subCategory }) => {
   const [categoryHeading, setCategoryHeading] = useState(
@@ -25,29 +26,29 @@ const UpdateCategoryForm = ({ subCategory }) => {
   const MySwal = withReactContent(Swal);
 
   const handleUpdate = async (e) => {
-    console.log("Some");
+    console.log('Some');
     e.preventDefault();
 
     const newCategory = {
-      categoryHeading,
-      category,
-      UOM,
-      startMRef,
-      operatorM,
-      endMRef,
-      startFRef,
-      operatorF,
-      endFRef,
-      startBRef,
-      operatorB,
-      endBRef,
+      category: DOMPurify.sanitize(category),
+      categoryHeading: DOMPurify.sanitize(categoryHeading),
+      UOM: DOMPurify.sanitize(UOM),
+      startMRef: DOMPurify.sanitize(startMRef),
+      operatorM: operatorM,
+      endMRef: DOMPurify.sanitize(endMRef),
+      startFRef: DOMPurify.sanitize(startFRef),
+      operatorF: operatorF,
+      endFRef: DOMPurify.sanitize(endFRef),
+      startBRef: DOMPurify.sanitize(startBRef),
+      operatorB: operatorB,
+      endBRef: DOMPurify.sanitize(endBRef),
     };
 
-    const response = await fetch("/api/tests/category/" + subCategory._id, {
-      method: "PATCH",
+    const response = await fetch('/api/tests/category/' + subCategory._id, {
+      method: 'PATCH',
       body: JSON.stringify(newCategory),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
     const json = await response.json();
@@ -56,9 +57,9 @@ const UpdateCategoryForm = ({ subCategory }) => {
       setError(json.error);
       setEmptyFields(json.emptyFields);
       MySwal.fire({
-        title: "Error",
+        title: 'Error',
         text: error,
-        icon: "error",
+        icon: 'error',
         showConfirmButton: false,
         timer: 1000,
       });
@@ -66,12 +67,12 @@ const UpdateCategoryForm = ({ subCategory }) => {
     if (response.ok) {
       if (response.status === 200) {
         MySwal.fire({
-          title: "Success",
-          text: "Successfully Updated Category",
-          icon: "success",
+          title: 'Success',
+          text: 'Successfully Updated Category',
+          icon: 'success',
           showConfirmButton: false,
           timer: 2000,
-          customClass: "alerts",
+          customClass: 'alerts',
           timerProgressBar: true,
         }).then(() => {
           navigate(-1);
@@ -84,18 +85,18 @@ const UpdateCategoryForm = ({ subCategory }) => {
     e.preventDefault();
 
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      customClass: "alerts",
-      confirmButtonText: "Yes, delete it!",
+      customClass: 'alerts',
+      confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await fetch("/api/tests/category/" + subCategory._id, {
-          method: "DELETE",
+        const response = await fetch('/api/tests/category/' + subCategory._id, {
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         });
         const json = await response.json();
@@ -105,9 +106,9 @@ const UpdateCategoryForm = ({ subCategory }) => {
         }
         if (response.ok) {
           MySwal.fire({
-            title: "Success",
-            text: "Successfully Deleted Category",
-            icon: "success",
+            title: 'Success',
+            text: 'Successfully Deleted Category',
+            icon: 'success',
             showConfirmButton: false,
             timer: 2000,
             timerProgressBar: true,
@@ -128,7 +129,7 @@ const UpdateCategoryForm = ({ subCategory }) => {
             type="text"
             onChange={(e) => setCategory(e.target.value)}
             value={category}
-            className={emptyFields.includes("category") ? "error" : ""}
+            className={emptyFields.includes('category') ? 'error' : ''}
           />
         </div>
       </div>
@@ -150,11 +151,11 @@ const UpdateCategoryForm = ({ subCategory }) => {
           <input
             type="text"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("UOM")] = "";
+              emptyFields[emptyFields.indexOf('UOM')] = '';
               setUOM(e.target.value);
             }}
             value={UOM}
-            className={emptyFields.includes("UOM") ? "error" : ""}
+            className={emptyFields.includes('UOM') ? 'error' : ''}
           />
         </div>
       </div>
@@ -165,22 +166,22 @@ const UpdateCategoryForm = ({ subCategory }) => {
           <input
             type="number"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("startMRef")] = "";
+              emptyFields[emptyFields.indexOf('startMRef')] = '';
               setStartMRef(e.target.value);
             }}
             value={startMRef}
-            className={emptyFields.includes("startMRef") ? "error" : ""}
+            className={emptyFields.includes('startMRef') ? 'error' : ''}
           />
         </div>
         <div className="col-2">
           <select
             type="text"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("operatorM")] = "";
+              emptyFields[emptyFields.indexOf('operatorM')] = '';
               setOperatorM(e.target.value);
             }}
             value={operatorM}
-            className={emptyFields.includes("operatorM") ? "error" : ""}
+            className={emptyFields.includes('operatorM') ? 'error' : ''}
           >
             <option value=""></option>
             <option value="-">-</option>
@@ -195,11 +196,11 @@ const UpdateCategoryForm = ({ subCategory }) => {
           <input
             type="number"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("endMRef")] = "";
+              emptyFields[emptyFields.indexOf('endMRef')] = '';
               setEndMRef(e.target.value);
             }}
             value={endMRef}
-            className={emptyFields.includes("endMRef") ? "error" : ""}
+            className={emptyFields.includes('endMRef') ? 'error' : ''}
           />
         </div>
       </div>
@@ -211,11 +212,11 @@ const UpdateCategoryForm = ({ subCategory }) => {
           <input
             type="number"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("startFRef")] = "";
+              emptyFields[emptyFields.indexOf('startFRef')] = '';
               setStartFRef(e.target.value);
             }}
             value={startFRef}
-            className={emptyFields.includes("startFRef") ? "error" : ""}
+            className={emptyFields.includes('startFRef') ? 'error' : ''}
           />
         </div>
         <div className="col-2">
@@ -223,11 +224,11 @@ const UpdateCategoryForm = ({ subCategory }) => {
           <select
             type="text"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("operatorF")] = "";
+              emptyFields[emptyFields.indexOf('operatorF')] = '';
               setOperatorF(e.target.value);
             }}
             value={operatorF}
-            className={emptyFields.includes("operatorF") ? "error" : ""}
+            className={emptyFields.includes('operatorF') ? 'error' : ''}
           >
             <option value=""></option>
             <option value="-">-</option>
@@ -242,11 +243,11 @@ const UpdateCategoryForm = ({ subCategory }) => {
           <input
             type="number"
             onChange={(e) => {
-              emptyFields[emptyFields.indexOf("endFRef")] = "";
+              emptyFields[emptyFields.indexOf('endFRef')] = '';
               setEndFRef(e.target.value);
             }}
             value={endFRef}
-            className={emptyFields.includes("endFRef") ? "error" : ""}
+            className={emptyFields.includes('endFRef') ? 'error' : ''}
           />
         </div>
       </div>
@@ -258,7 +259,7 @@ const UpdateCategoryForm = ({ subCategory }) => {
             type="number"
             onChange={(e) => setStartBRef(e.target.value)}
             value={startBRef}
-            className={emptyFields.includes("startBRef") ? "error" : ""}
+            className={emptyFields.includes('startBRef') ? 'error' : ''}
           />
         </div>
         <div className="col-2">
@@ -267,7 +268,7 @@ const UpdateCategoryForm = ({ subCategory }) => {
             type="text"
             onChange={(e) => setOperatorB(e.target.value)}
             value={operatorB}
-            className={emptyFields.includes("operatorB") ? "error" : ""}
+            className={emptyFields.includes('operatorB') ? 'error' : ''}
           >
             <option value=""></option>
             <option value="-">-</option>
@@ -283,7 +284,7 @@ const UpdateCategoryForm = ({ subCategory }) => {
             type="number"
             onChange={(e) => setEndBRef(e.target.value)}
             value={endBRef}
-            className={emptyFields.includes("endBRef") ? "error" : ""}
+            className={emptyFields.includes('endBRef') ? 'error' : ''}
           />
         </div>
       </div>

@@ -1,24 +1,33 @@
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
-import '../../css/MachineStyles/machineDetails.css'
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../../css/MachineStyles/machineDetails.css';
 
-const UpdateMachine = ({machine}) => {
+const UpdateMachine = ({ machine }) => {
   //const { dispatch } = useMachineContext();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    console.log(machine);
+  console.log(machine);
 
-    const [MaintenanceDate, setMaintenanceDate] = useState(machine.MaintenanceDate)
-    const [Issue, setIssue] = useState(machine.Issue)
-    const [MachinePart, setMachinePart] = useState(machine.MachinePart)
-    const [brandOfMachinePart, setbrandOfMachinePart] = useState(machine.brandOfMachinePart)
-    const [PriceOfMachinePart, setPriceOfMachinePart] = useState(machine.PriceOfMachinePart)
-    const [TechnicianName, setTechnicianName] = useState(machine.TechnicianName)
-    const [TechTelno, setTechTelno] = useState(machine.TechTelno)
-    const [TechnicianPayment, setTechnicianPayment] = useState(machine.TechnicianPayment)
-    const [error, setError] = useState(null);
-    const[emptyFields, setEmptyFields] = useState([]);
+  const [MaintenanceDate, setMaintenanceDate] = useState(
+    machine.MaintenanceDate
+  );
+  const [Issue, setIssue] = useState(machine.Issue);
+  const [MachinePart, setMachinePart] = useState(machine.MachinePart);
+  const [brandOfMachinePart, setbrandOfMachinePart] = useState(
+    machine.brandOfMachinePart
+  );
+  const [PriceOfMachinePart, setPriceOfMachinePart] = useState(
+    machine.PriceOfMachinePart
+  );
+  const [TechnicianName, setTechnicianName] = useState(machine.TechnicianName);
+  const [TechTelno, setTechTelno] = useState(machine.TechTelno);
+  const [TechnicianPayment, setTechnicianPayment] = useState(
+    machine.TechnicianPayment
+  );
+  const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
   // useEffect(()=>{
   //   getMachineDetails();
@@ -32,45 +41,54 @@ const UpdateMachine = ({machine}) => {
   // }
 
   const handleMachineUpdate = async (e) => {
-            e.preventDefault()
-            const updatedMachinePart = {MaintenanceDate, Issue, MachinePart,brandOfMachinePart,PriceOfMachinePart,TechnicianName,TechTelno,TechnicianPayment} 
-            
-            const response = await fetch(`/api/machineParts/` + machine._id, {
-                method: 'PATCH',
-                body: JSON.stringify(updatedMachinePart),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            const json = await response.json()
-    
-            if(!response.ok) {
-                setError(json.error)
-                setEmptyFields(json.emptyFields)
-                Swal.fire({
-                    title: 'Error',
-                    text: error,
-                    icon: 'error',
-                    showConfirmButton: false,
-                    timer: 1000,
-                })
-            }
-            if(response.ok) {
-                if( response.status === 200 ) {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Successfully Machine',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        navigate('/machineHistory/' + machine.machineId);
-                    })
-                }
-            }
-        }
-  
+    e.preventDefault();
+    const updatedMachinePart = {
+      MaintenanceDate: DOMPurify.sanitize(MaintenanceDate),
+      Issue: DOMPurify.sanitize(Issue),
+      MachinePart: DOMPurify.sanitize(MachinePart),
+      brandOfMachinePart: DOMPurify.sanitize(brandOfMachinePart),
+      PriceOfMachinePart: DOMPurify.sanitize(PriceOfMachinePart),
+      TechnicianName: DOMPurify.sanitize(TechnicianName),
+      TechTelno: DOMPurify.sanitize(TechTelno),
+      TechnicianPayment: DOMPurify.sanitize(TechnicianPayment),
+    };
+
+    const response = await fetch(`/api/machineParts/` + machine._id, {
+      method: 'PATCH',
+      body: JSON.stringify(updatedMachinePart),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const json = await response.json();
+
+    if (!response.ok) {
+      setError(json.error);
+      setEmptyFields(json.emptyFields);
+      Swal.fire({
+        title: 'Error',
+        text: error,
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    }
+    if (response.ok) {
+      if (response.status === 200) {
+        Swal.fire({
+          title: 'Success',
+          text: 'Successfully Machine',
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        }).then(() => {
+          navigate('/machineHistory/' + machine.machineId);
+        });
+      }
+    }
+  };
+
   // const handleUpdate = async (e) => {
   //   console.log(MachineType, Brand, Model, SerialNo,PurchaseDate,WarrantyExp, Manufacturer, TelNo);
   // };
@@ -117,7 +135,9 @@ const UpdateMachine = ({machine}) => {
               onChange={(e) => setbrandOfMachinePart(e.target.value)}
               value={brandOfMachinePart}
               // required
-              className={emptyFields.includes('brandOfMachinePart') ? 'error' : ''}
+              className={
+                emptyFields.includes('brandOfMachinePart') ? 'error' : ''
+              }
             />
           </div>
           <div className="input-box">
@@ -127,7 +147,9 @@ const UpdateMachine = ({machine}) => {
               onChange={(e) => setPriceOfMachinePart(e.target.value)}
               value={PriceOfMachinePart}
               // required
-              className={emptyFields.includes('PriceOfMachinePart') ? 'error' : ''}
+              className={
+                emptyFields.includes('PriceOfMachinePart') ? 'error' : ''
+              }
             />
           </div>
           <div className="input-box">
@@ -158,11 +180,13 @@ const UpdateMachine = ({machine}) => {
               onChange={(e) => setTechnicianPayment(e.target.value)}
               value={TechnicianPayment}
               // required
-              className={emptyFields.includes('TechnicianPayment') ? 'error' : ''}
+              className={
+                emptyFields.includes('TechnicianPayment') ? 'error' : ''
+              }
             />
           </div>
           <div className="Add-button">
-            <button className='subBtn'>Update</button>
+            <button className="subBtn">Update</button>
           </div>
           {error && <div className="error">{error}</div>}
         </div>
@@ -172,4 +196,3 @@ const UpdateMachine = ({machine}) => {
 };
 
 export default UpdateMachine;
-
