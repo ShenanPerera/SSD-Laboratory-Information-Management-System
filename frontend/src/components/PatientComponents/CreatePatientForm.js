@@ -1,13 +1,14 @@
 ///(search function needs to be implemented later)
 //(bug: page redirects when submitting)
 
-import '../../css/PatientDetailStyles/PatientDetailStyles.css';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import withPermission from "../../UtillFuntions/withPermission";
-import Permission from "../../UtillFuntions/Permission";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import '../../css/PatientDetailStyles/PatientDetailStyles.css';
+import Permission from '../../UtillFuntions/Permission';
+import withPermission from '../../UtillFuntions/withPermission';
 
 const CreatePatientForm = () => {
   const navigate = useNavigate();
@@ -27,7 +28,15 @@ const CreatePatientForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const patient = { firstName, lastName, NIC, tpNo, gender, age, email };
+    const patient = {
+      firstName: DOMPurify.sanitize(firstName),
+      lastName: DOMPurify.sanitize(lastName),
+      NIC: DOMPurify.sanitize(NIC),
+      tpNo: DOMPurify.sanitize(tpNo),
+      gender: DOMPurify.sanitize(gender),
+      age: DOMPurify.sanitize(age),
+      email: DOMPurify.sanitize(email),
+    };
 
     const response = await fetch('/api/patients/', {
       method: 'POST',
@@ -225,4 +234,7 @@ const CreatePatientForm = () => {
   );
 };
 
-export default withPermission(CreatePatientForm, [Permission.RECEPTIONIST, Permission.ADMIN]);
+export default withPermission(CreatePatientForm, [
+  Permission.RECEPTIONIST,
+  Permission.ADMIN,
+]);

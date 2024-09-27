@@ -1,8 +1,9 @@
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
-import { useMachineContext } from '../../hooks/useMachineContext';
-import '../../css/MachineStyles/machineDetails.css'
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../../css/MachineStyles/machineDetails.css';
+import { useMachineContext } from '../../hooks/useMachineContext';
 
 const MachineForm = () => {
   const { dispatch } = useMachineContext();
@@ -15,24 +16,24 @@ const MachineForm = () => {
   const [PurchaseDate, setpurchasedDate] = useState('');
   const [WarrantyExp, setWarrantyExp] = useState('');
   const [Manufacturer, setManufacturer] = useState('');
-  const [Price , setPrice] = useState('');
+  const [Price, setPrice] = useState('');
   const [TelNo, setTelNo] = useState('');
   const [error, setError] = useState(null);
-  const[emptyFields, setEmptyFields] = useState([]);
-  
+  const [emptyFields, setEmptyFields] = useState([]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const machine = {
-      MachineType,
-      Brand,
-      Model,
-      Price,
-      SerialNo,
-      PurchaseDate,
-      WarrantyExp,
-      Manufacturer,
-      TelNo,
+      MachineType: DOMPurify.sanitize(MachineType),
+      Brand: DOMPurify.sanitize(Brand),
+      Model: DOMPurify.sanitize(Model),
+      SerialNo: DOMPurify.sanitize(SerialNo),
+      PurchaseDate: DOMPurify.sanitize(PurchaseDate),
+      WarrantyExp: DOMPurify.sanitize(WarrantyExp),
+      Manufacturer: DOMPurify.sanitize(Manufacturer),
+      Price: DOMPurify.sanitize(Price),
+      TelNo: DOMPurify.sanitize(TelNo),
     };
 
     const response = await fetch('/api/machines', {
@@ -46,7 +47,7 @@ const MachineForm = () => {
 
     if (!response.ok) {
       setError(json.error);
-      setEmptyFields(json.emptyFields)
+      setEmptyFields(json.emptyFields);
       console.log('error');
       Swal.fire({
         title: 'Error',
@@ -54,7 +55,7 @@ const MachineForm = () => {
         icon: 'error',
         showConfirmButton: false,
         timer: 1000,
-    })
+      });
     }
     if (response.ok) {
       setError(null);
@@ -70,22 +71,22 @@ const MachineForm = () => {
       console.log('new machine added:', json);
       // dispatch({ type: 'CREATE_MACHINE', payload: json });
       // if( response.status === 200 ) {
-        Swal.fire({
-            title: 'Success',
-            text: 'Machine Added Successfully',
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
-        }).then(() => {
-          navigate('/machineList')
-        })
+      Swal.fire({
+        title: 'Success',
+        text: 'Machine Added Successfully',
+        icon: 'success',
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      }).then(() => {
+        navigate('/machineList');
+      });
     }
   };
 
   return (
     <div>
-      <hr/>
+      <hr />
       <form className="create" onSubmit={handleSubmit}>
         <div className="machinelabels">
           <div className="input-box">
@@ -125,7 +126,7 @@ const MachineForm = () => {
               onChange={(e) => setSerialNo(e.target.value)}
               value={SerialNo}
               // required
-              className={emptyFields.includes('SerialNo') ? 'error' : ''} 
+              className={emptyFields.includes('SerialNo') ? 'error' : ''}
             />
           </div>
           <div className="input-box">
@@ -179,9 +180,9 @@ const MachineForm = () => {
               className={emptyFields.includes('TelNo') ? 'error' : ''}
             />
           </div>
-          <br/>
+          <br />
           <div>
-            <button className='subBtn'>Add New Machine</button>
+            <button className="subBtn">Add New Machine</button>
           </div>
           {error && <div className="error">{error}</div>}
         </div>
@@ -190,4 +191,4 @@ const MachineForm = () => {
   );
 };
 
-export default MachineForm
+export default MachineForm;

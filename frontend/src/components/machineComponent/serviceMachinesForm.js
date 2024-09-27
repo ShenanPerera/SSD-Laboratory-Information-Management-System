@@ -1,36 +1,37 @@
-import { useState} from 'react';
+import { useState } from 'react';
 //import { useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-const ServiceMachineForm = ({machine}) => {
+const ServiceMachineForm = ({ machine }) => {
   const navigate = useNavigate();
   //const { machines, setMachines } = useState(null);
   //const { id } = useParams();
 
   console.log(machine._id);
 
-  const [machineId , setMachineId] = useState(machine._id);
-  const [machineName , setmachineName] = useState(machine.MachineType);
+  const [machineId, setMachineId] = useState(machine._id);
+  const [machineName, setmachineName] = useState(machine.MachineType);
   const [LastserviceDate, setLastServiceDate] = useState('');
   const [NextServiceDate, setNextServiceDate] = useState('');
   const [TechnicianName, setTechnicianName] = useState('');
   const [TechTelno, setTechTelno] = useState('');
   const [TechnicianPayment, setTechnicianPayment] = useState('');
   const [error, setError] = useState(null);
-  const[emptyFields, setEmptyFields] = useState([]);
-  
+  const [emptyFields, setEmptyFields] = useState([]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const serviceMachines = {
-      machineId,
-      machineName,
-      LastserviceDate,
-      NextServiceDate,
-      TechnicianName,
-      TechTelno,
-      TechnicianPayment
+      machineId: DOMPurify.sanitize(machineId),
+      machineName: DOMPurify.sanitize(machineName),
+      LastserviceDate: DOMPurify.sanitize(LastserviceDate),
+      NextServiceDate: DOMPurify.sanitize(NextServiceDate),
+      TechnicianName: DOMPurify.sanitize(TechnicianName),
+      TechTelno: DOMPurify.sanitize(TechTelno),
+      TechnicianPayment: DOMPurify.sanitize(TechnicianPayment),
     };
 
     const response = await fetch('/api/serviceMachines', {
@@ -44,7 +45,7 @@ const ServiceMachineForm = ({machine}) => {
 
     if (!response.ok) {
       setError(json.error);
-      setEmptyFields(json.emptyFields)
+      setEmptyFields(json.emptyFields);
       console.log('error');
       Swal.fire({
         title: 'Error',
@@ -52,7 +53,7 @@ const ServiceMachineForm = ({machine}) => {
         icon: 'error',
         showConfirmButton: false,
         timer: 1000,
-    })
+      });
     }
     if (response.ok) {
       setError(null);
@@ -71,11 +72,11 @@ const ServiceMachineForm = ({machine}) => {
         icon: 'success',
         showConfirmButton: false,
         timer: 2000,
-        timerProgressBar: true
-    })
-    navigate('/machineHistory/' + machine._id);
+        timerProgressBar: true,
+      });
+      navigate('/machineHistory/' + machine._id);
     }
-  };  
+  };
 
   return (
     <div class="">
@@ -141,11 +142,13 @@ const ServiceMachineForm = ({machine}) => {
               onChange={(e) => setTechnicianPayment(e.target.value)}
               value={TechnicianPayment}
               // required
-              className={emptyFields.includes('TechnicianPayment') ? 'error' : ''}
+              className={
+                emptyFields.includes('TechnicianPayment') ? 'error' : ''
+              }
             />
           </div>
           <div class="Add-button">
-            <button className='subBtn'>Add Service Dates</button>
+            <button className="subBtn">Add Service Dates</button>
           </div>
           {error && <div className="error">{error}</div>}
         </div>

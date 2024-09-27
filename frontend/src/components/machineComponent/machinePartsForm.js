@@ -1,9 +1,10 @@
-import { useState} from 'react';
+import { useState } from 'react';
 //import { useParams } from 'react-router-dom';
-import Swal from 'sweetalert2';
+import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-const MachinePartsForm = ({machine}) => {
+const MachinePartsForm = ({ machine }) => {
   const navigate = useNavigate();
   //const { machines, setMachines } = useState(null);
   //const { id } = useParams();
@@ -11,8 +12,8 @@ const MachinePartsForm = ({machine}) => {
 
   //const currentMachine = machines.filter((m) => m._id === id)[0];
 
-  const [machineId , setMachineId] = useState(machine._id);
-  const [machineName , setmachineName] = useState(machine.MachineType);
+  const [machineId, setMachineId] = useState(machine._id);
+  const [machineName, setmachineName] = useState(machine.MachineType);
   const [MaintenanceDate, setMaintenanceDate] = useState('');
   const [Issue, setIssue] = useState('');
   const [MachinePart, setMachinePart] = useState('');
@@ -22,22 +23,22 @@ const MachinePartsForm = ({machine}) => {
   const [TechTelno, setTechTelno] = useState('');
   const [TechnicianPayment, setTechnicianPayment] = useState('');
   const [error, setError] = useState(null);
-  const[emptyFields, setEmptyFields] = useState([]);
-  
+  const [emptyFields, setEmptyFields] = useState([]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const machineParts = {
-      machineId,
-      machineName,
-      MaintenanceDate,
-      Issue,
-      MachinePart,
-      brandOfMachinePart,
-      PriceOfMachinePart,
-      TechnicianName,
-      TechTelno,
-      TechnicianPayment
+      machineId: DOMPurify.sanitize(machineId),
+      machineName: DOMPurify.sanitize(machineName),
+      MaintenanceDate: DOMPurify.sanitize(MaintenanceDate),
+      Issue: DOMPurify.sanitize(Issue),
+      MachinePart: DOMPurify.sanitize(MachinePart),
+      brandOfMachinePart: DOMPurify.sanitize(brandOfMachinePart),
+      PriceOfMachinePart: DOMPurify.sanitize(PriceOfMachinePart),
+      TechnicianName: DOMPurify.sanitize(TechnicianName),
+      TechTelno: DOMPurify.sanitize(TechTelno),
+      TechnicianPayment: DOMPurify.sanitize(TechnicianPayment),
     };
 
     const response = await fetch('/api/machineParts', {
@@ -52,14 +53,14 @@ const MachinePartsForm = ({machine}) => {
     if (!response.ok) {
       setError(json.error);
       console.log('error');
-      setEmptyFields(json.emptyFields)
+      setEmptyFields(json.emptyFields);
       Swal.fire({
-                title: 'Error',
-                text: error,
-                icon: 'error',
-                showConfirmButton: false,
-                timer: 1000,
-            })
+        title: 'Error',
+        text: error,
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 1000,
+      });
     }
     if (response.ok) {
       setError(null);
@@ -79,9 +80,9 @@ const MachinePartsForm = ({machine}) => {
         icon: 'success',
         showConfirmButton: false,
         timer: 2000,
-        timerProgressBar: true
-    })
-    navigate('/machineHistory/' + machine._id)
+        timerProgressBar: true,
+      });
+      navigate('/machineHistory/' + machine._id);
     }
   };
 
@@ -98,7 +99,7 @@ const MachinePartsForm = ({machine}) => {
       <hr />
       <form className="create" onSubmit={handleSubmit}>
         <div className="machinelabels">
-        <div className="input-box">
+          <div className="input-box">
             {/* <label>Machine ID :</label> */}
             <input
               type="text"
@@ -156,7 +157,9 @@ const MachinePartsForm = ({machine}) => {
               onChange={(e) => setbrandOfMachinePart(e.target.value)}
               value={brandOfMachinePart}
               // required
-              className={emptyFields.includes('brandOfMachinePart') ? 'error' : ''}
+              className={
+                emptyFields.includes('brandOfMachinePart') ? 'error' : ''
+              }
             />
           </div>
           <div className="input-box">
@@ -166,7 +169,9 @@ const MachinePartsForm = ({machine}) => {
               onChange={(e) => setPriceOfMachinePart(e.target.value)}
               value={PriceOfMachinePart}
               // required
-              className={emptyFields.includes('PriceOfMachinePart') ? 'error' : ''}
+              className={
+                emptyFields.includes('PriceOfMachinePart') ? 'error' : ''
+              }
             />
           </div>
           <div className="input-box">
@@ -197,11 +202,13 @@ const MachinePartsForm = ({machine}) => {
               onChange={(e) => setTechnicianPayment(e.target.value)}
               value={TechnicianPayment}
               // required
-              className={emptyFields.includes('TechnicianPayment') ? 'error' : ''}
+              className={
+                emptyFields.includes('TechnicianPayment') ? 'error' : ''
+              }
             />
           </div>
           <div className="Add-button">
-            <button className='subBtn'>Add Machine Part</button>
+            <button className="subBtn">Add Machine Part</button>
           </div>
           {error && <div className="error">{error}</div>}
         </div>

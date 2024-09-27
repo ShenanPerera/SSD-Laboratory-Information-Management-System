@@ -1,10 +1,11 @@
-import '../../css/PatientDetailStyles/PatientDetailStyles.css';
+import DOMPurify from 'dompurify';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import withPermission from '../../UtillFuntions/withPermission';
+import '../../css/PatientDetailStyles/PatientDetailStyles.css';
 import Permission from '../../UtillFuntions/Permission';
+import withPermission from '../../UtillFuntions/withPermission';
 
 const EditPatientForm = ({ patient }) => {
   const { id } = useParams();
@@ -27,7 +28,15 @@ const EditPatientForm = ({ patient }) => {
       setUpdated('');
     }
 
-    const patient = { firstName, lastName, NIC, tpNo, gender, age, email };
+    const patient = {
+      age: DOMPurify.sanitize(age),
+      email: DOMPurify.sanitize(email),
+      firstName: DOMPurify.sanitize(firstName),
+      lastName: DOMPurify.sanitize(lastName),
+      NIC: DOMPurify.sanitize(NIC),
+      tpNo: DOMPurify.sanitize(tpNo),
+      gender: DOMPurify.sanitize(gender),
+    };
 
     const response = await fetch('/api/patients/' + id, {
       method: 'PATCH',
@@ -230,6 +239,6 @@ const EditPatientForm = ({ patient }) => {
 };
 
 export default withPermission(EditPatientForm, [
- Permission.ADMIN,
+  Permission.ADMIN,
   Permission.RECEPTIONIST,
 ]);
