@@ -1,9 +1,12 @@
-require('dotenv').config(); //require and directly invoke the config method
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
+const winston = require('winston');
 
 const { dosLimiter } = require('./middleware/rateLimitMiddleware');
 const patientRoutes = require('./routes/patientRoutes');
@@ -23,8 +26,26 @@ const serviceMachineRoute = require('./routes/serviceMachineRoutes');
 const AttendanceRoute = require('./routes/AttendanceRoute');
 const SalaryRoute = require('./routes/salaryRoutes');
 
-//express app
-const app = express(); //invokes the function
+const app = express();
+
+// Winston logger configuration
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(new winston.transports.Console({
+    format: winston.format.simple(),
+  }));
+}
 
 // Trust the first proxy
 app.set('trust proxy', 1);
@@ -32,34 +53,44 @@ app.set('trust proxy', 1);
 // Enable CORS for all routes
 app.use(cors());
 
-//middleware
-app.use(express.json()); //if the request has a body or data then it passes and attaches to req object
+// Middleware
+app.use(express.json());
+app.use(cookieParser()); // Required for CSRF
 
-app.use((req, res, next) => {
-  // next is used to move to the next piece of middleware
-  console.log(req.path, req.method);
-  next();
-}); //this function will fire for every request
+// CSRF protection middleware (only for /api/inventoryRoutes)
+const csrfProtection = csrf({ cookie: true });
 
-// Helmet middleware
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        'script-src': ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
-        'img-src': ["'self'", 'data:'],
-        'connect-src': ["'self'", 'cdn.jsdelivr.net'],
-        'default-src': ["'self'"],
-        'style-src': null,
-      },
+// Helmet middleware for securing HTTP headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      'script-src': ["'self'", "'unsafe-inline'", 'cdn.jsdelivr.net'],
+      'img-src': ["'self'", 'data:'],
+      'connect-src': ["'self'", 'cdn.jsdelivr.net'],
+      'default-src': ["'self'"],
+      'style-src': null,
     },
-  })
-);
+  },
+}));
+
+// Logging middleware
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url}`);
+  next();
+});
 
 // Rate limiting middleware
 app.use(dosLimiter);
 
-//routes
+// Apply CSRF protection only to the /api/inventoryRoutes route
+app.use('/api/inventoryRoutes', csrfProtection, inventoryRoutes);
+
+// CSRF token route (for fetching the CSRF token, if needed)
+app.get('/api/csrf-token', csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+});
+
+// Other routes (No CSRF protection for these routes)
 app.use('/api/patients/', patientRoutes);
 app.use('/api/services/', servicesRoutes);
 app.use('/api/bills/', billRoutes);
@@ -67,7 +98,6 @@ app.use('/api/expenses/', expensesRoutes);
 app.use('/api/samples', sampleRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/testResult', testResultRoutes);
-app.use('/api/inventoryRoutes', inventoryRoutes);
 app.use('/api/machines', machineRoutes);
 app.use('/api/Staff', StaffRoutes);
 app.use('/api/Admin', AdminRoute);
@@ -77,16 +107,20 @@ app.use('/api/serviceMachines', serviceMachineRoute);
 app.use('/api/Attendance', AttendanceRoute);
 app.use('/api/Salary', SalaryRoute);
 
-//connect to db
+// Error handling middleware
+app.use((err, req, res, next) => {
+  logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+  res.status(err.status || 500).json({ error: err.message });
+});
+
+// Connect to db and start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    //listen for requests
     app.listen(process.env.PORT, () => {
-      //process is a global object available in node
-      console.log(`connected to db and listening  on port ${process.env.PORT}`);
+      logger.info(`Connected to db and listening on port ${process.env.PORT}`);
     });
   })
   .catch((error) => {
-    console.log(error);
+    logger.error('Database connection error:', error);
   });

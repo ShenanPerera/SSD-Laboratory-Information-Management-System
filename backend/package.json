@@ -15,7 +15,9 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "bwip-js": "^3.3.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "csurf": "^1.11.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-rate-limit": "^7.4.0",
@@ -24,6 +26,7 @@
     "moment": "^2.29.4",
     "mongoose": "^6.10.2",
     "nodemon": "^2.0.20",
-    "validator": "^13.9.0"
+    "validator": "^13.9.0",
+    "winston": "^3.14.2"
   }
 }

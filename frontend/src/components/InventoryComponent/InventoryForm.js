@@ -11,12 +11,42 @@ const TestDataz = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState('');
   const [emptyFields, setEmptyFields] = useState([]);
+  const [csrfToken, setCsrfToken] = useState('');
   const [formData, setFormData] = useState({
     inveType: '',
     proName: '',
     exDate: '',
     quantity: '',
   });
+
+  useEffect(() => {
+    // Fetch CSRF token
+    fetch('/api/csrf-token', {
+      credentials: 'include' // Include credentials (cookies) to get CSRF token
+    })
+      .then(response => response.json())
+      .then(data => setCsrfToken(data.csrfToken))
+      .catch(error => console.error('Error fetching CSRF token:', error));
+
+    // Fetch inventory data
+    const fetchInventory = async () => {
+      try {
+        const response = await fetch('/api/inventoryRoutes');
+        const json = await response.json();
+        if (response.ok) {
+          setInventory(json);
+          setIsLoaded(true);
+        } else {
+          throw new Error('Failed to fetch inventory');
+        }
+      } catch (error) {
+        console.error('Error fetching inventory:', error);
+        setError('Failed to load inventory. Please try again later.');
+        setIsLoaded(true);
+      }
+    };
+    fetchInventory();
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -36,7 +66,9 @@ const TestDataz = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-csrf-token': csrfToken
         },
+        credentials: 'include',
         body: JSON.stringify(sanitizedFormData),
       });
       const json = await response.json();
@@ -60,7 +92,7 @@ const TestDataz = () => {
         setEmptyFields([]);
       } else {
         setError(json.error);
-        setEmptyFields(json.emptyFields);
+        setEmptyFields(json.emptyFields || []);
         Swal.fire({
           title: 'Error',
           text: json.error,
@@ -71,21 +103,22 @@ const TestDataz = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error submitting form:', error);
+      setError('An unexpected error occurred. Please try again.');
+      Swal.fire({
+        title: 'Error',
+        text: 'An unexpected error occurred. Please try again.',
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      });
     }
   };
 
-  useEffect(() => {
-    const fetchInventory = async () => {
-      const response = await fetch('/api/inventoryRoutes');
-      const json = await response.json();
-      if (response.ok) {
-        setInventory(json);
-        setIsLoaded(true);
-      }
-    };
-    fetchInventory();
-  }, []);
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container">
