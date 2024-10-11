@@ -6,7 +6,7 @@ const useUserPreferenceStore = create(
         (set) => ({
             permissions: [],
             setPermissions: (newPermissions) => set({ permissions : newPermissions }),
-            resetPermissions: () => set({ permissions: [] }),
+            resetPermissions: () => set({ permissions: [] , accessToken: null }),
 }),
 {
     name: 'user-preference',

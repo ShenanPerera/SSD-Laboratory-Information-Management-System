@@ -39,6 +39,19 @@ const getAdmin = async (req, res) => {
   res.status(200).json(admin);
 };
 
+const getAdminByEmail = async (req, res) => {
+  const { email } = req.params;
+
+  const admin = await Admin.findOne({
+    email,
+  });
+
+  if (!admin) {
+    return res.status(200).json({ error: 'No such admin' });
+  }
+  res.status(200).json({username:admin.username});
+};
+
 const loginAdmin = async (req,res) => {
   const {username,pw} = req.body
 
@@ -60,4 +73,5 @@ module.exports = {
   createAdmin,
   getaAdmin,
   loginAdmin,
+  getAdminByEmail,
 };

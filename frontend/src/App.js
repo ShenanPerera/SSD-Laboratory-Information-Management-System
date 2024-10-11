@@ -6,6 +6,9 @@ import {
 } from 'react-router-dom';
 import { useAuthContext } from './hooks/useAuthContext';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useEffect , useState } from 'react';
+import useUserPreferenceStore from './store/useUserPreferenceStore';
+import Cookies from 'js-cookie';
 
 // assets
 import mediLineLogo from './assets/common/mediLineLogo.webp';
@@ -71,6 +74,10 @@ import Salary from './pages/salary';
 
 function App() {
   const { user } = useAuthContext();
+  const location = window.location;
+  console.log('location:', location);
+  const code = new URLSearchParams(location.search).get('code'); 
+
   return (
     <Router>
       <div className="App">
@@ -320,12 +327,12 @@ function App() {
                   />
                   <Route
                     path="/dashboard"
-                    element={user ? <Dashboard /> : <Welcome />}
+                    element={user ? (<Dashboard />) : code ? (<Dashboard code={code} />) : (<Welcome />)}
                   />
                   <Route
                     exact
                     path="/"
-                    element={user ? <Dashboard /> : <Welcome />}
+                    element={user ? (<Dashboard />) : code ? (<Dashboard code={code} />) : (<Welcome />)}
                   />
                 </Routes>
               </div>

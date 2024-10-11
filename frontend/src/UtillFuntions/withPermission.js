@@ -2,15 +2,10 @@ import useUserPreferenceStore from "../store/useUserPreferenceStore";
 import Swal from "sweetalert2";
 
 const withPermission = (Component , requiredPermissions ) => {
-    return (props) =>{
-        
-        
+    return (props) =>{      
         const permissions = useUserPreferenceStore((state) => state.permissions);
-        
-
         const hasPermission = requiredPermissions.some(permission => permissions.includes(permission));
         
-
         if(!hasPermission){
           Swal.fire({
             title: 'Access Denied',

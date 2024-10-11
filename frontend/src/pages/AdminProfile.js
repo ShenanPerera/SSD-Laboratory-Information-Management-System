@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import withPermission from "../UtillFuntions/withPermission";
+import Permission from "../UtillFuntions/Permission";
 
 const AdminProfile= () =>{
 
@@ -17,4 +19,4 @@ const AdminProfile= () =>{
     )
 }
 
-export default AdminProfile
+export default withPermission(AdminProfile, [Permission.ADMIN]);

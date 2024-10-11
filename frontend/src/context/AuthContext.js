@@ -8,6 +8,8 @@ export const authReducer = (state, action) => {
             return { user: action.payload }
         case 'LOGOUT':
             return { user: null }
+        // case 'SET_OAUTH_USER':
+        //     return { user: {...state.user, oauthUser: action.payload}}
         default:
             return state
     }
@@ -27,6 +29,11 @@ export const AuthContextProvider = ({ children }) => {
     }, [])
 
     console.log('AuthContext state ', state)
+
+    // const setOauthUser = (oauthUser) => {
+    //     dispatch({type: 'SET_OAUTH_USER', payload: oauthUser})
+    //     localStorage.setItem('user', JSON.stringify({...state.user, oauthUser}))
+    // }
 
     return(
         <AuthContext.Provider  value= {{...state, dispatch}}>
