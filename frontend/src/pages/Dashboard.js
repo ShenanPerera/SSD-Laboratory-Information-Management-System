@@ -21,6 +21,14 @@ const Dashboard = ({code}) => {
 
     useEffect(()=>{
       console.log('code:', code);
+      const codeVerifier = Cookies.get('code_verifier');
+      console.log('codeVerifier:', codeVerifier);
+      setCodeVerifier(codeVerifier);
+      const codeChallenge = Cookies.get('code_challenge');
+      setCodeChallenge(codeChallenge);
+
+      console.log('codeVerifier:', codeVerifier);
+      
         if(code && codeVerifier){
             console.log('code and codeVerifier:', code, codeVerifier);
             fetchAccessToken(code, codeVerifier)
@@ -33,7 +41,7 @@ const Dashboard = ({code}) => {
                         console.error(error);
                     });
         }
-     }, [code, codeVerifier, setAccessToken]);
+     }, [code]);
 
      const fetchAccessToken = async (code, codeVerifier) => {
         console.log(code, codeVerifier);
@@ -47,8 +55,8 @@ const Dashboard = ({code}) => {
             code: code,
             redirect_uri: process.env.REACT_APP_REDIRECT_URL,
             client_id: process.env.REACT_APP_CLIENT_ID,
-            code_verifier: codeVerifier,
-            code_secret: process.env.REACT_APP_CLIENT_SECRET
+            // code_verifier: codeVerifier,
+            client_secret: process.env.REACT_APP_CLIENT_SECRET
         }),
 
     });
@@ -56,6 +64,8 @@ const Dashboard = ({code}) => {
        console.log('Token response status:', response.status);
 
     if (!response.ok) {
+      const error = await response.json();
+      console.log(error);
       throw new Error('Failed to fetch access token');
     }
   
@@ -100,7 +110,7 @@ const Dashboard = ({code}) => {
                     console.log('permissions:', permissions);
                 },
             });
-            navigate('/AdminProfile')
+            // navigate('/AdminProfile')
         }
       // else{
       //     navigate('/')
@@ -125,77 +135,77 @@ const Dashboard = ({code}) => {
   }
 } 
     
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      const formattedDateTime = moment().format('h:mm:ss A ddd, D MMM');
-      setformattedDateTime(formattedDateTime);
-    });
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const now = new Date();
+  //     const formattedDateTime = moment().format('h:mm:ss A ddd, D MMM');
+  //     setformattedDateTime(formattedDateTime);
+  //   });
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
-  useEffect(() => {
-    const fetchPendingTestResults = async () => {
-      try {
+  // useEffect(() => {
+  //   const fetchPendingTestResults = async () => {
+  //     try {
         
-        const response = await fetch('/api/testResult/pendingTests');
-        const json = await response.json();
+  //       const response = await fetch('/api/testResult/pendingTests');
+  //       const json = await response.json();
 
-      if (response.ok) {
-        const pendingCount = json.length;
-        setPendingCount(pendingCount)
+  //     if (response.ok) {
+  //       const pendingCount = json.length;
+  //       setPendingCount(pendingCount)
        
-      }
-      } catch (error) {
-        console.log(error);
-      } 
+  //     }
+  //     } catch (error) {
+  //       console.log(error);
+  //     } 
       
-    };
-    fetchPendingTestResults()
+  //   };
+  //   fetchPendingTestResults()
     
-  }, []);
+  // }, []);
 
-  useEffect(() => {
-    const fetchTestCompletedResults = async () => {
-      try {
+  // useEffect(() => {
+  //   const fetchTestCompletedResults = async () => {
+  //     try {
         
-        const response = await fetch('/api/testResult/completedTests');
-        const json = await response.json();
+  //       const response = await fetch('/api/testResult/completedTests');
+  //       const json = await response.json();
 
-      if (response.ok) {
-        const completedCount = json.length;
-        setCompletedCount(completedCount)
+  //     if (response.ok) {
+  //       const completedCount = json.length;
+  //       setCompletedCount(completedCount)
        
-      }
-      } catch (error) {
-        console.log(error);
-      } 
+  //     }
+  //     } catch (error) {
+  //       console.log(error);
+  //     } 
       
-    };
-    fetchTestCompletedResults()
+  //   };
+  //   fetchTestCompletedResults()
     
-  }, []);
+  // }, []);
 
-  useEffect(() => {
-    const fetchSamples = async () => {
-      try {
-        const response = await fetch('/api/samples/pendingSamples');
-        const json = await response.json();
+  // useEffect(() => {
+  //   const fetchSamples = async () => {
+  //     try {
+  //       const response = await fetch('/api/samples/pendingSamples');
+  //       const json = await response.json();
     
-        if (response.ok) {
+  //       if (response.ok) {
           
-          setPendingSampleCount(json.length)
+  //         setPendingSampleCount(json.length)
     
           
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchSamples()    
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchSamples()    
     
-  }, []);
+  // }, []);
 
   const navToPendingTests = () => {
     navigate(`/pendingTests`)

@@ -37,16 +37,13 @@ const AdminLogin = () =>{
         if(!codeVerifier || !codeChallenge){
             const code_verifier = generateCodeVerifier();
             const code_challenge = await generateCodeChallenge(code_verifier);
-                               
-            // setCodeVerifier(code_verifier);
-            // setCodeChallenge(code_challenge);
 
             console.log('Before Authorization:');
             console.log('code_verifier:', codeVerifier);
             console.log('code_challenge:', codeChallenge)
 
-            Cookies.set('code_verifier', code_verifier,{ expires:1/(60*24) , secure: true, sameSite:'Strict' , path: '/'});
-            Cookies.set('code_challenge', code_challenge,{ expires:1/(60*24) , secure: true, sameSite:'Strict' , path: '/'});
+            Cookies.set('code_verifier', code_verifier,{ expires:5/(60*24) , sameSite:'Lax' , path: '/'});
+            Cookies.set('code_challenge', code_challenge,{ expires:5/(60*24) , secure: true, sameSite:'Lax' , path: '/'});
 
             window.location.href = `${process.env.REACT_APP_AUTH_URL}?client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20openid&code_challenge=${code_challenge}&code_challenge_method=S256`;
         }

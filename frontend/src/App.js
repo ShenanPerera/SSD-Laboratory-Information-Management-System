@@ -77,7 +77,7 @@ function App() {
   const location = window.location;
   console.log('location:', location);
   const code = new URLSearchParams(location.search).get('code'); 
-
+console.log('code:', code);
   return (
     <Router>
       <div className="App">
