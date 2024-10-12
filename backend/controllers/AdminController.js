@@ -50,7 +50,10 @@ const getAdminByEmail = async (req, res) => {
   if (!admin) {
     return res.status(404).json({ error: 'No such admin' });
   }
-  res.status(200).json({ username: admin.username });
+
+  const token = createToken(admin._id);
+
+  res.status(200).json({ username: admin.username, token });
 };
 
 const loginAdmin = async (req, res) => {

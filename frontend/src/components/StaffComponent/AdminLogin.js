@@ -14,11 +14,6 @@ const AdminLogin = () => {
   const { login, error, isLoading } = useAdminLogin();
   const { accessToken, setAccessToken } = useUserPreferenceStore();
   const navigate = useNavigate();
-  // const location = useLocation();
-  // const code = new URLSearchParams(location.search).get('code');
-  // console.log('code:', code);
-  // const [codeVerifier, setCodeVerifier] = useState(null);
-  // const [codeChallenge, setCodeChallenge] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,103 +50,6 @@ const AdminLogin = () => {
 
     window.location.href = `${process.env.REACT_APP_AUTH_URL}?client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20openid&code_challenge=${code_challenge}&code_challenge_method=S256`;
   };
-
-  // useEffect(()=>{
-  //     if(code && codeVerifier){
-  //         console.log('code and codeVerifier:', code, codeVerifier);
-  //         fetchAccessToken(code, codeVerifier)
-  //             .then((token) => {
-  //                 setAccessToken(token);
-  //                 console.log(token);
-
-  //             }).catch((error) =>
-  //                 {
-  //                     console.error(error);
-  //                 });
-  //     }
-  //  }, [code, codeVerifier, setAccessToken]);
-
-  // api.js
-  // const fetchAccessToken = async (code, codeVerifier) => {
-  //     console.log(code, codeVerifier);
-  //     const response = await fetch(`${process.env.REACT_APP_TOKEN_URL}`, {
-  //         method: 'POST',
-  //         headers: {
-  //             'Content-Type': 'application/x-www-form-urlencoded',
-  //         },
-  //         body: new URLSearchParams({
-  //         grant_type: 'authorization_code',
-  //         code: code,
-  //         redirect_uri: process.env.REACT_APP_REDIRECT_URL,
-  //         client_id: process.env.REACT_APP_CLIENT_ID,
-  //         code_verifier: codeVerifier,
-  //     }),
-
-  // });
-
-  // console.log('Token response status:', response.status);
-
-  // if (!response.ok) {
-  //   throw new Error('Failed to fetch access token');
-  // }
-
-  // const data = await response.json();
-  // fetchUserInfo(data.access_token);
-  // }
-
-  // const fetchUserInfo = async (accessToken) => {
-  //     console.log('fetchUserInfo', accessToken);
-  //     const response = await fetch(`${process.env.REACT_APP_USERINFO_URL}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${accessToken}`,
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch user info');
-  //     }
-
-  //     const data = await response.json();
-  //     console.log(data);
-
-  //     const isAdmin = await getUserByEmail(data.email);
-  //     if(isAdmin){
-  //         console.log(accessToken, isAdmin);
-  //         Cookies.set('accessToken', accessToken,{ expires:7 , secure: true, sameSite:'None' , path: '/'});
-  //         Cookies.set('isAdmin', isAdmin,{ expires:7, secure: true, sameSite:'None' , path: '/'});
-
-  //         console.log(Cookies.get('accessToken'));
-
-  //         AuthContextProvider.setOAuthUser(isAdmin);
-
-  //         fetchPermissionsAfterLogIn({
-  //             fetchFunction: async () => {
-  //                 return [Permission.ADMIN];
-  //             },
-  //             afterSet: (permissions) => {
-  //                 console.log('permissions:', permissions);
-  //             },
-  //         });
-  //         navigate('/AdminProfile')
-  //     }
-  //     else{
-  //         navigate('/')
-  //     }
-  // }
-
-  // const getUserByEmail = async (email) => {
-  //     const response = await fetch('/api/Admin/getAdminByEmail',{
-  //         method: 'POST',
-  //         headers: {'Content-Type': 'application/json'},
-  //         body: JSON.stringify({email})
-  //     })
-  //     if (!response.ok) {
-  //         throw new Error('Failed to fetch user info');
-  //     }
-  //     const data = await response.json();
-  //     console.log(data);
-  //     return data.username;
-  // }
 
   return (
     <div>

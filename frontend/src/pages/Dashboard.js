@@ -77,8 +77,8 @@ const Dashboard = ({ code }) => {
       }
 
       const data = await response.json();
-      console.log(data);
-      const isAdmin = await getUserByEmail(data.email);
+
+      const isAdmin = await getUserByEmail(data.email, accessToken);
 
       if (isAdmin) {
         setIsAdmin(isAdmin);
@@ -117,23 +117,29 @@ const Dashboard = ({ code }) => {
     }
   };
 
-  const getUserByEmail = async (email) => {
+  const getUserByEmail = async (email, accessToken) => {
     const response = await fetch('/api/Admin/validate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
       body: JSON.stringify({ email }),
     });
     if (!response.ok) {
       return false;
     }
     const data = await response.json();
-    console.log(data);
-    return data.username;
+
+    return data;
   };
 
   const setOauthUser = (oauthUser) => {
-    dispatch({ type: 'SET_OAUTH_USER', payload: oauthUser });
-    localStorage.setItem('user', JSON.stringify({ oauthUser }));
+    dispatch({ type: 'LOGIN', payload: oauthUser });
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ username: oauthUser.username, token: oauthUser.token })
+    );
   };
 
   useEffect(() => {
