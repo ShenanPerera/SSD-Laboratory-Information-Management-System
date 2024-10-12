@@ -2,10 +2,9 @@ const Admin = require('../models/AdminModule');
 const jwt = require('jsonwebtoken');
 const mongooose = require('mongoose');
 
-const createToken = (_id) =>{
-  return jwt.sign({_id},process.env.SECRET, {expiresIn:'3d'})
-
-}
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' });
+};
 
 const createAdmin = async (req, res) => {
   const { username, pw, user_id } = req.body;
@@ -40,33 +39,32 @@ const getAdmin = async (req, res) => {
 };
 
 const getAdminByEmail = async (req, res) => {
-  const { email } = req.params;
+  const { email } = req.body;
+
+  console.log(email);
 
   const admin = await Admin.findOne({
     email,
   });
 
   if (!admin) {
-    return res.status(200).json({ error: 'No such admin' });
+    return res.status(404).json({ error: 'No such admin' });
   }
-  res.status(200).json({username:admin.username});
+  res.status(200).json({ username: admin.username });
 };
 
-const loginAdmin = async (req,res) => {
-  const {username,pw} = req.body
+const loginAdmin = async (req, res) => {
+  const { username, pw } = req.body;
 
-  try{
-    const admin = await Admin.login(username,pw)
-    const token = createToken(admin._id)
-    
+  try {
+    const admin = await Admin.login(username, pw);
+    const token = createToken(admin._id);
 
-    res.status(200).json({username,token})
-
-} catch(error){
-    res.status(400).json({error:error.message})
-
-}
-}
+    res.status(200).json({ username, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 module.exports = {
   getAdmin,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
- 
+
 const CustomerLeaderBoard = ({ top }) => {
   const [customers, setCustomers] = useState([]);
   const navigate = useNavigate();

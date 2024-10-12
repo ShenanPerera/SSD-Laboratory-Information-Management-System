@@ -4,6 +4,7 @@ const {
   createAdmin,
   getaAdmin,
   loginAdmin,
+  getAdminByEmail,
 } = require('../controllers/AdminController');
 
 //const requireAuth = require('../middleware/requireAdminAuth')
@@ -14,6 +15,8 @@ const router = express.Router();
 //router.use(requireAuth)
 
 router.get('/', getAdmin);
+
+router.post('/validate/', getAdminByEmail);
 
 router.post('/', createAdmin);
 

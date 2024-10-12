@@ -1,13 +1,11 @@
 import AdminLogin from '../components/StaffComponent/AdminLogin';
 
-const LoginAdmin= () =>{
+const LoginAdmin = () => {
+  return (
+    <div className="login">
+      <AdminLogin />
+    </div>
+  );
+};
 
-    return(
-        <div className="login">
-            
-            <AdminLogin/>
-        </div>
-    )
-}
-
-export default LoginAdmin
+export default LoginAdmin;
