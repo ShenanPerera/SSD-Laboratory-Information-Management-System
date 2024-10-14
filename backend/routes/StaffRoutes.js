@@ -9,6 +9,7 @@ const {
   deleteStaff,
   updateStaff,
   loginStaff,
+  getStaffByEmail,
 } = require('../controllers/StaffControllers');
 
 const requireAuth = require('../middleware/requireAdminAuth');
@@ -49,5 +50,8 @@ router.post('/', createStaff);
 
 //DELETE a Staff member
 router.delete('/:id', deleteStaff);
+
+//GET a Staff member by email
+router.get('/validateStaff/', getStaffByEmail);
 
 module.exports = router;

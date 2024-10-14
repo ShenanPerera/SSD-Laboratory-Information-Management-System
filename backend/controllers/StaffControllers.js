@@ -198,6 +198,24 @@ const fetchProfile = async(req,res) => {
   
 }
 
+const getStaffByEmail = async (req, res) => {
+  const { email } = req.body;
+
+  console.log(email);
+
+  const staffMember = await Staff.findOne({
+    email,
+  });
+
+  if (!admin) {
+    return res.status(404).json({ error: 'No such StaffMember' });
+  }
+
+  const token = createToken(staffMember._id);
+
+  res.status(200).json({ username: staffMember.username, position: staffMember.post, token });  
+};
+
 module.exports = {
   getStaff,
   getStaffs,
@@ -206,4 +224,5 @@ module.exports = {
   updateStaff,
   loginStaff,
   fetchProfile,
+  getStaffByEmail
 };
