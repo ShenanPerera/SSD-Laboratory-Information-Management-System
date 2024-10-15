@@ -20,14 +20,17 @@ const router = express.Router();
 //login Staff member
 router.post('/login', staffLoginLimiter, loginStaff);
 
+//GET a Staff member by email
+router.post('/validateStaff/', getStaffByEmail);
+
+//requiring admins auth
+router.use(requireAuth);
+
 //GET a single Staff member
 router.get('/:id', getStaff);
 
 //UPDATE a Staff member
 router.patch('/:id', updateStaff);
-
-//requiring admins auth
-router.use(requireAuth);
 
 //GET all Staff
 router.get('/', getStaffs);
@@ -50,8 +53,5 @@ router.post('/', createStaff);
 
 //DELETE a Staff member
 router.delete('/:id', deleteStaff);
-
-//GET a Staff member by email
-router.get('/validateStaff/', getStaffByEmail);
 
 module.exports = router;
