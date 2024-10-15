@@ -75,7 +75,7 @@ const Dashboard = ({ code }) => {
     }
     const data = await response.json();
 
-    return data.username;
+    return data;
   };
 
   const getStaffByEmail = async (email) => {
@@ -96,7 +96,6 @@ const Dashboard = ({ code }) => {
   };
 
   const fetchUserInfo = async (accessToken) => {
-    console.log('fetchUserInfo', accessToken);
     try {
       const response = await fetch(`${process.env.REACT_APP_USERINFO_URL}`, {
         headers: {
@@ -258,6 +257,7 @@ const Dashboard = ({ code }) => {
   };
 
   const setOauthUser = (oauthUser) => {
+    console.log('setOauthUser:', oauthUser);
     dispatch({ type: 'LOGIN', payload: oauthUser });
     localStorage.setItem(
       'user',
