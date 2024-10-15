@@ -42,22 +42,21 @@ const getAdminByEmail = async (req, res) => {
   const { email } = req.body;
 
   console.log(email);
-try{
-  const admin = await Admin.findOne({
-    email,
-  });
+  try {
+    const admin = await Admin.findOne({
+      email: email,
+    });
 
-  if (!admin) {
-    return res.status(404).json({ error: 'No such admin' });
+    if (!admin) {
+      return res.status(404).json({ error: 'No such admin' });
+    }
+
+    const token = createToken(admin._id);
+
+    res.status(200).json({ username: admin.username, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-
-
-  const token = createToken(admin._id);
-
-  res.status(200).json({ username: admin.username, token });
-}catch(error){
-  res.status(400).json({ error: error.message });
-}
 };
 
 const loginAdmin = async (req, res) => {
