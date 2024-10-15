@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { FaCheck, FaClock, FaExclamationTriangle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import CustomerLeaderBoard from '../components/PatientComponents/CustomerLeaderBoard';
-import { AuthContextProvider } from '../context/AuthContext';
+import { useAuthContext } from '../hooks/useAuthContext';
 import fetchPermissionsAfterLogIn from '../UtillFuntions/fetchPermissionsAfterLogIn';
 import Permission from '../UtillFuntions/Permission';
 
@@ -13,35 +13,25 @@ const Dashboard = ({ code }) => {
   const [pendingCount, setPendingCount] = useState(null);
   const [completedCount, setCompletedCount] = useState(null);
   const [pendingSampleCount, setPendingSampleCount] = useState(null);
-  const [codeVerifier, setCodeVerifier] = useState(null);
-  const [codeChallenge, setCodeChallenge] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(null);
-  const [isUser, setIsUser] = useState(null);
+  const { dispatch } = useAuthContext();
 
   useEffect(() => {
-    console.log('code:', code);
     const codeVerifier = Cookies.get('code_verifier');
-    console.log('codeVerifier:', codeVerifier);
-    setCodeVerifier(codeVerifier);
-    const codeChallenge = Cookies.get('code_challenge');
-    setCodeChallenge(codeChallenge);
-
-    console.log('codeVerifier:', codeVerifier);
 
     if (code && codeVerifier) {
       console.log('code and codeVerifier:', code, codeVerifier);
       fetchAccessToken(code, codeVerifier)
         .then((token) => {
           setAccessToken(token);
-          console.log(token);
         })
         .catch((error) => {
           console.error(error);
         });
     }
-  }, [code]);
+  }, []);
 
   const fetchAccessToken = async (code, codeVerifier) => {
     console.log(code, codeVerifier);
@@ -60,8 +50,6 @@ const Dashboard = ({ code }) => {
       }),
     });
 
-    console.log('Token response status:', response.status);
-
     if (!response.ok) {
       const error = await response.json();
       console.log(error);
@@ -69,7 +57,7 @@ const Dashboard = ({ code }) => {
     }
 
     const data = await response.json();
-    console.log(data);
+
     fetchUserInfo(data.access_token);
   };
 
@@ -86,7 +74,7 @@ const Dashboard = ({ code }) => {
       throw new Error('Failed to fetch user info');
     }
     const data = await response.json();
-    console.log(data);
+
     return data.username;
   };
 
@@ -103,7 +91,7 @@ const Dashboard = ({ code }) => {
       throw new Error('Failed to fetch user info');
     }
     const data = await response.json();
-    console.log(data);
+
     return data;
   };
 
@@ -121,13 +109,12 @@ const Dashboard = ({ code }) => {
       }
 
       const data = await response.json();
-      console.log(data);
+
       const isAdmin = await getAdminByEmail(data.email);
 
       if (isAdmin) {
-        console.log(accessToken, isAdmin);
-        setIsAdmin(isAdmin);
-        AuthContextProvider.setOAuthUser(isAdmin);
+        setOauthUser(isAdmin);
+
         Cookies.set('accessToken', accessToken, {
           expires: 7,
           secure: true,
@@ -141,10 +128,6 @@ const Dashboard = ({ code }) => {
           path: '/',
         });
 
-        console.log(Cookies.get('accessToken'));
-
-        AuthContextProvider.setOAuthUser(isAdmin);
-
         fetchPermissionsAfterLogIn({
           fetchFunction: async () => {
             return [Permission.ADMIN];
@@ -153,14 +136,14 @@ const Dashboard = ({ code }) => {
             console.log('permissions:', permissions);
           },
         });
+
         navigate('/AdminProfile');
       } else {
         const isStaff = await getStaffByEmail(data.email);
 
         if (isStaff) {
-          console.log(accessToken, isStaff);
-          setIsUser(isStaff);
-          AuthContextProvider.setOAuthUser(isStaff);
+          setOauthUser(isStaff);
+
           Cookies.set('accessToken', accessToken, {
             expires: 7,
             secure: true,
@@ -174,9 +157,7 @@ const Dashboard = ({ code }) => {
             path: '/',
           });
 
-          console.log(Cookies.get('accessToken'));
-
-          AuthContextProvider.setOAuthUser(isStaff);
+          setOauthUser(isStaff);
 
           fetchPermissionsAfterLogIn({
             fetchFunction: async () => {
@@ -274,6 +255,14 @@ const Dashboard = ({ code }) => {
 
   const navToPendingAccession = () => {
     navigate(`/pendingAccession`);
+  };
+
+  const setOauthUser = (oauthUser) => {
+    dispatch({ type: 'LOGIN', payload: oauthUser });
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ username: oauthUser.username, token: oauthUser.token })
+    );
   };
 
   return (

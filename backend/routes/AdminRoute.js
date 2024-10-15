@@ -16,13 +16,12 @@ const router = express.Router();
 
 router.get('/', getAdmin);
 
-router.get('/validateAdmin/', getAdminByEmail);
+router.post('/validateAdmin/', getAdminByEmail);
 
 router.post('/', createAdmin);
 
 router.post('/login', adminLoginLimiter, loginAdmin);
 
 router.get('/:id', getaAdmin);
-
 
 module.exports = router;
